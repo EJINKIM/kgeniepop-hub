@@ -434,6 +434,18 @@ body::before{
   .slot{display:none;}
   .staff-tag{font-size:8px;padding:3px 4px;}
 }
+
+.monthly-leave-balance{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;margin-bottom:10px;border-radius:14px;background:rgba(255,255,255,.72);color:#64748b;font-size:12px;font-weight:700;}
+.monthly-leave-balance strong{font-size:22px;color:#7e22ce;letter-spacing:-.04em;}
+.monthly-leave-help{font-size:11.5px;line-height:1.55;color:#7c6f91;margin-bottom:11px;}
+.monthly-leave-days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-height:190px;overflow:auto;padding:2px;}
+.monthly-leave-day-btn{border:1px solid rgba(216,180,254,.75);background:rgba(255,255,255,.82);color:#64748b;border-radius:11px;padding:8px 4px;font-size:11px;font-weight:800;cursor:pointer;transition:.18s ease;}
+.monthly-leave-day-btn:hover{transform:translateY(-1px);border-color:#a855f7;}
+.monthly-leave-day-btn.selected{background:linear-gradient(135deg,#ede9fe,#f5d0fe);color:#7e22ce;border-color:#c084fc;box-shadow:0 6px 14px rgba(168,85,247,.18);}
+.monthly-leave-day-btn.disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.monthly-leave-selected{margin-top:10px;text-align:center;font-size:12px;font-weight:900;color:#7e22ce;}
+@media(max-width:430px){.monthly-leave-days{grid-template-columns:repeat(4,1fr);}}
+
 </style>
 </head>
 <body>
@@ -447,7 +459,7 @@ body::before{
   <div class="hero">
     <div class="card sidebar">
       <h2>K지니팝 직원 휴무일 정하기</h2>
-      <p class="helper">직원 선택 후 PIN을 입력하고 기본 휴무 8일을 선택하세요. 2026년 7월부터 월차 날짜는 아래 칸에서 별도로 선택합니다.</p>
+      <p class="helper">직원 선택 후 PIN을 입력하고 기본 휴무 8일을 선택하세요. 월차는 매달 1일씩 발생하며, 사용하지 않은 월차는 다음 달로 이월됩니다.</p>
 
       <div class="staff-select">
         <select id="staffSelect">
@@ -476,10 +488,14 @@ body::before{
       </div>
 
       <div class="monthly-leave-box" id="monthlyLeaveBox">
-        <label for="monthlyLeaveSelect">월차 1일 선택</label>
-        <select id="monthlyLeaveSelect">
-          <option value="">월차 사용일을 선택해주세요</option>
-        </select>
+        <label>🌙 사용할 월차 날짜 선택</label>
+        <div class="monthly-leave-balance">
+          <span>현재 사용 가능한 월차</span>
+          <strong id="monthlyLeaveBalance">0일</strong>
+        </div>
+        <p class="monthly-leave-help" id="monthlyLeaveHelp">월차는 매달 1일씩 발생하며, 미사용분은 다음 달로 이월됩니다. 한 달에는 최대 3일까지 사용할 수 있어요.</p>
+        <div class="monthly-leave-days" id="monthlyLeaveDays"></div>
+        <div class="monthly-leave-selected" id="monthlyLeaveSelected">선택한 월차 0일</div>
       </div>
 
       <div class="remaining">
@@ -490,7 +506,7 @@ body::before{
 
       <div class="rules">
         <div class="rule" id="leaveRule">✓ 직원별 월 8회 휴무 신청</div>
-        <div class="rule">✓ 2026년 7월부터 기본 휴무 8일 + 월차 1일 별도 선택</div>
+        <div class="rule">✓ 월차는 매달 1일 발생 · 미사용분 이월 · 월 최대 3일 사용</div>
         <div class="rule">✓ 매월 15일부터 다음 달 휴무 신청 가능</div>
         <div class="rule">✓ 신청 마감일 : 매월 25일 (23:59까지)</div>
         <div class="rule">✓ 평일 2명·토/일 1명 초과 시 객관적 기준으로 조율</div>
@@ -521,7 +537,7 @@ body::before{
 
       <div class="card conflict-card">
         <div class="conflict-head">
-          <h3>🤝 우리는 평화롭고, 공정하게 Go~ 😊</h3>
+          <h3>🤝 평화롭고, 공정하고, 스무스하게 GO~ 😊</h3>
           <button class="guide-open-btn" type="button" onclick="openCoordinationGuide()">📖 조율 방법 자세히 보기</button>
           <small>정원을 넘은 날짜만 쏙 모아 보여드려요 ✨</small>
         </div>
@@ -544,8 +560,8 @@ body::before{
   <section class="guide-modal-panel" role="dialog" aria-modal="true" aria-labelledby="coordinationGuideTitle">
     <button class="guide-close-btn" type="button" onclick="closeCoordinationGuide()" aria-label="안내창 닫기">×</button>
     <div class="guide-modal-kicker">K GENIE POP 휴무 조율 가이드</div>
-    <h2 id="coordinationGuideTitle">우리는 평화롭고, 공정하게 Go~ 😊</h2>
-    <p class="guide-intro">처음 입사한 직원도 이 안내만 읽으면 신청부터 최종 확정까지 한 번에 이해할 수 있어요.</p>
+    <h2 id="coordinationGuideTitle">평화롭고, 공정하고, 스무스하게 GO~😊</h2>
+    <p class="guide-intro">소중한 직원님! 이 안내만 읽으면 신청부터 최종 확정까지 한 번에 이해할 수 있어요.</p>
 
     <div class="guide-step">
       <span class="guide-step-number">1</span>
@@ -553,22 +569,26 @@ body::before{
     </div>
     <div class="guide-step">
       <span class="guide-step-number">2</span>
-      <div><strong>허용 인원을 넘은 날짜만 조율해요.</strong><p>평일 3명 이상, 토·일요일 2명 이상 신청한 경우에만 조율 카드가 자동으로 나타나요.</p></div>
+      <div><strong>월차는 모아 두었다가 필요한 달에 사용할 수 있어요.</strong><p>2026년 7월부터 매달 월차 1일이 발생하며, 사용하지 않은 월차는 다음 달로 이월됩니다. 예를 들어 두 달 동안 월차를 사용하지 않았다면 세 번째 달에는 총 3일을 사용할 수 있어요. 단, 매장 운영을 위해 한 달에 사용할 수 있는 월차는 최대 3일까지입니다.</p></div>
     </div>
     <div class="guide-step">
       <span class="guide-step-number">3</span>
-      <div><strong>본인의 상황을 하나만 선택해요.</strong><p><b>필수 휴무</b>는 병원·가족 행사·예약·시험 일정 등으로 변경이 어려운 경우, <b>희망 휴무</b>는 가능하면 쉬고 싶은 경우, <b>변경 가능</b>은 다른 날짜로 옮겨도 괜찮은 경우예요. 상세한 개인 사유는 공개되지 않아요.</p></div>
+      <div><strong>허용 인원을 넘은 날짜만 조율해요.</strong><p>평일 3명 이상, 토·일요일 2명 이상 신청한 경우에만 조율 카드가 자동으로 나타나요.</p></div>
     </div>
     <div class="guide-step">
       <span class="guide-step-number">4</span>
-      <div><strong>먼저 직원끼리 부드럽게 조율해요.</strong><p>각자 조율 의사를 저장한 뒤, 다른 날짜로 변경 가능한 직원이 자발적으로 날짜를 옮길 수 있어요. 직원끼리 합의되어 허용 인원 안으로 줄어들면 이사의 결정 없이 조율이 끝납니다.</p></div>
+      <div><strong>본인의 상황을 하나만 선택해요.</strong><p><b>필수 휴무</b>는 병원·가족 행사·예약·시험 일정 등으로 변경이 어려운 경우, <b>희망 휴무</b>는 가능하면 쉬고 싶은 경우, <b>변경 가능</b>은 다른 날짜로 옮겨도 괜찮은 경우예요. 상세한 개인 사유는 공개되지 않아요.</p></div>
     </div>
     <div class="guide-step">
       <span class="guide-step-number">5</span>
-      <div><strong>자발적으로 날짜를 옮기면 평화의 보석 💎 1개가 적립돼요.</strong><p>초과 조율에서 본인이 직접 다른 날짜로 변경하면 평화의 보석 1개가 반짝 적립됩니다. 이 보석은 다음 주나 다음 달 초과 조율에서 사용할 수 있는 우선권이에요. 실제 우선 배정을 받으면 보석 1개가 사용되며, 같은 날짜에서는 중복 적립되지 않습니다. 보석을 4개 이상 모으면 재미있는 칭호인 <b>평화의 보석왕관</b>을 받고 왕좌 카드가 열려요. 보석 개수는 직원 평가나 업무 능력과는 전혀 관계없는, 배려를 기억하기 위한 즐거운 기록입니다.</p></div>
+      <div><strong>먼저 직원끼리 부드럽게 조율해요.</strong><p>각자 조율 의사를 저장한 뒤, 다른 날짜로 변경 가능한 직원이 자발적으로 날짜를 옮길 수 있어요. 직원끼리 합의되어 허용 인원 안으로 줄어들면 이사의 결정 없이 조율이 끝납니다.</p></div>
     </div>
     <div class="guide-step">
       <span class="guide-step-number">6</span>
+      <div><strong>자발적으로 날짜를 옮기면 평화의 보석 💎 1개가 적립돼요.</strong><p>초과 조율에서 본인이 직접 다른 날짜로 변경하면 평화의 보석 1개가 반짝 적립됩니다. 이 보석은 다음 주나 다음 달 초과 조율에서 사용할 수 있는 우선권이에요. 실제 우선 배정을 받으면 보석 1개가 사용되며, 같은 날짜에서는 중복 적립되지 않습니다. 보석을 4개 이상 모으면 재미있는 칭호인 <b>평화의 보석왕관</b>을 받고 왕좌 카드가 열려요. 보석 개수는 직원 평가나 업무 능력과는 전혀 관계가 없는, 배려를 기억하기 위한 즐거운 기록입니다.</p></div>
+    </div>
+    <div class="guide-step">
+      <span class="guide-step-number">7</span>
       <div><strong>직원끼리 조율되지 않을 때만 이사가 익명으로 결정해요.</strong><p>직원 간 합의로 허용 인원 안에 정리되지 않을 때만 두 분의 이사 중 한 분이 본인 계정과 PIN으로 최종 결정합니다. 직원 화면과 월간 요약에는 어느 이사가 확정했는지 표시되지 않습니다.</p></div>
     </div>
 
@@ -666,7 +686,7 @@ let currentMonth = new Date().getMonth() + 1;
 let allSchedules = {};
 let conflictData = {};
 let mySelectedDays = new Set();
-let myMonthlyLeaveDay = null;
+let myMonthlyLeaveDays = new Set();
 const managerAccounts = {
   "정부영": { pin:"7777", anonymousId:"directorA" },
   "윤희준": { pin:"8888", anonymousId:"directorB" }
@@ -829,27 +849,102 @@ function getApplicantsForDay(day){
   return applicants;
 }
 
+function getMonthlyLeaveDaysFromData(data){
+  if(Array.isArray(data?.monthlyLeaveDays)) return data.monthlyLeaveDays.map(Number).filter(Boolean);
+  if(data?.monthlyLeaveDay) return [Number(data.monthlyLeaveDay)].filter(Boolean);
+  return [];
+}
+
 function getMonthlyLeaveUsersForDay(day){
   const monthData = allSchedules[monthKey()] || {};
   const users = [];
   Object.keys(monthData).forEach(staff => {
-    if(Number(monthData[staff]?.monthlyLeaveDay) === Number(day)) users.push(staff);
+    if(getMonthlyLeaveDaysFromData(monthData[staff]).includes(Number(day))) users.push(staff);
   });
   const currentStaff = document.getElementById('staffSelect').value;
-  if(currentStaff && Number(myMonthlyLeaveDay) === Number(day) && !users.includes(currentStaff)) users.push(currentStaff);
+  if(currentStaff && myMonthlyLeaveDays.has(Number(day)) && !users.includes(currentStaff)) users.push(currentStaff);
   return users;
 }
 
+function monthSerial(year, month){
+  return year * 12 + (month - 1);
+}
+
+function getAccruedMonthlyLeave(year = currentYear, month = currentMonth){
+  const start = monthSerial(2026, 7);
+  const target = monthSerial(year, month);
+  return target < start ? 0 : target - start + 1;
+}
+
+function getUsedMonthlyLeaveBefore(staff, year = currentYear, month = currentMonth){
+  const target = monthSerial(year, month);
+  let used = 0;
+  Object.keys(allSchedules).forEach(key => {
+    const match = /^(\d{4})-(\d{2})$/.exec(key);
+    if(!match) return;
+    const serial = monthSerial(Number(match[1]), Number(match[2]));
+    if(serial >= monthSerial(2026, 7) && serial < target){
+      used += getMonthlyLeaveDaysFromData(allSchedules[key]?.[staff] || {}).length;
+    }
+  });
+  return used;
+}
+
+function getMonthlyLeaveBalance(staff, year = currentYear, month = currentMonth){
+  if(!staff || !hasMonthlyLeave(year, month)) return 0;
+  return Math.max(0, getAccruedMonthlyLeave(year, month) - getUsedMonthlyLeaveBefore(staff, year, month));
+}
+
+function getMonthlyLeaveSelectableLimit(staff){
+  return Math.min(3, getMonthlyLeaveBalance(staff));
+}
+
 function populateMonthlyLeaveSelect(){
-  const select = document.getElementById('monthlyLeaveSelect');
   const box = document.getElementById('monthlyLeaveBox');
+  const daysWrap = document.getElementById('monthlyLeaveDays');
+  const balanceEl = document.getElementById('monthlyLeaveBalance');
+  const selectedEl = document.getElementById('monthlyLeaveSelected');
+  const helpEl = document.getElementById('monthlyLeaveHelp');
   const enabled = hasMonthlyLeave();
+  const staff = document.getElementById('staffSelect').value;
   box.style.display = enabled ? 'block' : 'none';
-  select.disabled = !enabled;
+  if(!enabled) return;
+
+  const balance = getMonthlyLeaveBalance(staff);
+  const limit = getMonthlyLeaveSelectableLimit(staff);
+  balanceEl.textContent = staff ? `${balance}일` : '직원 선택';
+  helpEl.textContent = staff
+    ? `이번 달에는 보유 월차 ${balance}일 중 최대 ${limit}일까지 사용할 수 있어요. 미사용 월차는 다음 달로 이월됩니다.`
+    : '직원을 선택하면 현재 보유 월차와 선택 가능한 날짜가 표시됩니다.';
+
   const lastDate = new Date(currentYear, currentMonth, 0).getDate();
-  select.innerHTML = '<option value="">월차 사용일을 선택해주세요</option>' +
-    Array.from({length:lastDate}, (_,i) => `<option value="${i+1}">${currentMonth}월 ${i+1}일</option>`).join('');
-  select.value = myMonthlyLeaveDay ? String(myMonthlyLeaveDay) : '';
+  daysWrap.innerHTML = Array.from({length:lastDate}, (_,i) => {
+    const day = i + 1;
+    const selected = myMonthlyLeaveDays.has(day);
+    const disabled = !staff || (!selected && myMonthlyLeaveDays.size >= limit);
+    return `<button type="button" class="monthly-leave-day-btn${selected ? ' selected' : ''}${disabled ? ' disabled' : ''}" data-leave-day="${day}" ${disabled ? 'disabled' : ''}>${day}일</button>`;
+  }).join('');
+  selectedEl.textContent = `선택한 월차 ${myMonthlyLeaveDays.size}일 / 이번 달 최대 ${limit}일`;
+
+  daysWrap.querySelectorAll('[data-leave-day]').forEach(button => {
+    button.addEventListener('click', () => {
+      const day = Number(button.dataset.leaveDay);
+      if(myMonthlyLeaveDays.has(day)){
+        myMonthlyLeaveDays.delete(day);
+      } else {
+        const currentLimit = getMonthlyLeaveSelectableLimit(staff);
+        if(myMonthlyLeaveDays.size >= currentLimit){
+          alert(`이번 달에는 월차를 최대 ${currentLimit}일까지 사용할 수 있습니다.`);
+          return;
+        }
+        myMonthlyLeaveDays.add(day);
+      }
+      populateMonthlyLeaveSelect();
+      paintSavedSchedules();
+      renderMonthlySummary();
+      renderConflictPanel();
+    });
+  });
 }
 
 function paintSavedSchedules(){
@@ -999,8 +1094,8 @@ function renderGemVault(){
   document.getElementById('gemMessage').textContent = royal
     ? '우리 매장의 보석 같은 직원, 평화의 왕좌에 입성했습니다! ✨'
     : balance === 0
-      ? '배려가 필요한 순간 자발적으로 날짜를 옮기면 보석이 반짝 적립돼요.'
-      : '우리 매장을 반짝이게 만든 배려가 차곡차곡 쌓였어요 ✨';
+      ? '배려가 필요한 순간 자발적으로 날짜를 옮기면 보석이 반짝이며 적립돼요.'
+      : '매장을 반짝이게 만든 소중한 직원의 배려가 차곡차곡 쌓였어요 ✨';
   document.getElementById('gemMeta').textContent = `현재 사용 가능 ${balance}개 · 누적 배려 ${total}회 · 우선 배정 시 1개 사용`;
 }
 
@@ -1078,7 +1173,7 @@ function renderConflictPanel(){
           <span>${currentMonth}월 ${day}일(${weekday}) <span class="soft-divider">·</span> <span class="application-count">신청 ${applicants.length}명</span> <span class="soft-divider">/</span> <span class="capacity-text">허용 ${capacity}명</span></span>
           <span class="conflict-status">${resolution ? '최종 확정' : '조율 필요'}</span>
         </div>
-        <div class="conflict-guide"><span class="cheer-note">우리는 평화롭고, 공정하게 Go~ 😊</span><br>먼저 신청자끼리 조율해 주세요. 변경 가능한 직원은 아래 버튼으로 자발적으로 날짜를 옮길 수 있어요.<br><small>직원끼리 합의가 되지 않을 때만 이사가 최종 결정합니다.</small><br>${approvedText}<br><small>자발적으로 날짜를 옮기면 평화의 보석 💎 1개가 적립되고, 다음 초과 조율에서 우선 배정될 때 보석 1개가 사용됩니다.</small></div>
+        <div class="conflict-guide"><span class="cheer-note">평화롭고, 공정하고, 스무스하게 GO~ 😊</span><br>먼저 신청자끼리 조율해 주세요. 변경 가능한 직원은 아래 버튼으로 자발적으로 날짜를 옮길 수 있어요.<br><small>직원끼리 합의가 되지 않을 때만 이사가 최종 결정합니다.</small><br>${approvedText}<br><small>자발적으로 날짜를 옮기면 평화의 보석 💎 1개가 적립되고, 다음 초과 조율에서 우선 배정될 때 보석 1개가 사용됩니다.</small></div>
         <div class="preference-help">
           <div><strong>필수 휴무</strong> · 병원, 가족 행사, 예약, 시험 일정 등으로 날짜 변경이 어려운 경우</div>
           <div><strong>희망 휴무</strong> · 가능하면 해당 날짜에 쉬는 것을 선호하는 경우</div>
@@ -1092,7 +1187,7 @@ function renderConflictPanel(){
             <button class="small-action" type="button" onclick="voluntaryYield(${day}, '${selectedStaff}')">💎 이 날짜 배려하고 다른 날 선택하기</button>
           </div>` : ''}
         <div class="manager-row">
-          <select id="managerName-${day}" aria-label="이사 선택">
+          <select id="managerName-${day}" aria-label="관리자(이사) 본인 접속">
             <option value="">이사 선택</option>
             <option value="정부영">정부영 이사</option>
             <option value="윤희준">윤희준 이사</option>
@@ -1289,7 +1384,7 @@ function updateRemaining(){
   document.getElementById('remainingDays').textContent = 8 - mySelectedDays.size;
   document.getElementById('leaveLimitText').textContent = '기본 휴무 총 8회 선택 가능';
   document.getElementById('leaveRule').textContent = hasMonthlyLeave()
-    ? '✓ 기본 휴무 8일 + 월차 1일 별도 신청'
+    ? '✓ 기본 휴무 8일 + 누적 월차 별도 신청 (월 최대 3일)'
     : '✓ 직원별 월 8회 휴무 신청';
   populateMonthlyLeaveSelect();
 }
@@ -1319,13 +1414,13 @@ function loadAllSchedules(){
 function loadMySchedule(shouldPaint = true){
   const staff = document.getElementById('staffSelect').value;
   mySelectedDays.clear();
-  myMonthlyLeaveDay = null;
+  myMonthlyLeaveDays.clear();
 
   if(staff){
     const savedData = allSchedules[monthKey()]?.[staff] || {};
     const saved = savedData.days || [];
     saved.map(Number).forEach(day => mySelectedDays.add(day));
-    myMonthlyLeaveDay = savedData.monthlyLeaveDay ? Number(savedData.monthlyLeaveDay) : null;
+    getMonthlyLeaveDaysFromData(savedData).forEach(day => myMonthlyLeaveDays.add(day));
   }
 
   if(shouldPaint){
@@ -1385,13 +1480,6 @@ function renderMonthlySummary(){
   summary.innerHTML = items.join('');
 }
 
-document.getElementById('monthlyLeaveSelect').addEventListener('change', (event) => {
-  myMonthlyLeaveDay = event.target.value ? Number(event.target.value) : null;
-  paintSavedSchedules();
-  renderMonthlySummary();
-  renderConflictPanel();
-});
-
 document.getElementById('staffSelect').addEventListener('change', () => {
   loadMySchedule();
   renderGemVault();
@@ -1401,7 +1489,7 @@ document.getElementById('prevBtn').addEventListener('click', () => {
   currentMonth--;
   if(currentMonth < 1){ currentMonth = 12; currentYear--; }
   mySelectedDays.clear();
-  myMonthlyLeaveDay = null;
+  myMonthlyLeaveDays.clear();
   render();
   loadMySchedule();
 });
@@ -1410,7 +1498,7 @@ document.getElementById('nextBtn').addEventListener('click', () => {
   currentMonth++;
   if(currentMonth > 12){ currentMonth = 1; currentYear++; }
   mySelectedDays.clear();
-  myMonthlyLeaveDay = null;
+  myMonthlyLeaveDays.clear();
   render();
   loadMySchedule();
 });
@@ -1426,15 +1514,21 @@ document.getElementById('submitBtn').addEventListener('click', () => {
 
   if(!staff){ alert('직원을 선택해주세요.'); return; }
   if(employeePins[staff] !== pin){ alert('PIN 번호가 올바르지 않습니다.'); return; }
-  const leaveLimit = getMonthlyLeaveLimit();
+  const leaveLimit = 8;
   if(mySelectedDays.size !== leaveLimit){ alert(`휴무를 ${leaveLimit}일 선택해주세요.\n현재 ${mySelectedDays.size}일 선택됨`); return; }
   if(!validateBeforeSubmit(staff)) return;
+  const monthlyLeaveLimit = getMonthlyLeaveSelectableLimit(staff);
+  if(myMonthlyLeaveDays.size > monthlyLeaveLimit){
+    alert(`현재 사용할 수 있는 월차는 최대 ${monthlyLeaveLimit}일입니다.`);
+    return;
+  }
   if(!db){ alert('Firebase 연결을 확인해주세요.'); return; }
 
   db.ref(`schedules/${monthKey()}/${staff}`).set({
     name: staff,
     days: Array.from(mySelectedDays).sort((a,b) => a-b),
-    monthlyLeaveDay: hasMonthlyLeave() ? myMonthlyLeaveDay : null,
+    monthlyLeaveDays: hasMonthlyLeave() ? Array.from(myMonthlyLeaveDays).sort((a,b) => a-b) : [],
+    monthlyLeaveDay: null,
     updatedAt: Date.now()
   }).then(() => {
     showNotice(`${staff}님의 ${currentYear}년 ${currentMonth}월 휴무 신청이 저장되었습니다.`, 'success');
