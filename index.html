@@ -1148,6 +1148,11 @@ function toggleDay(day){
   if(mySelectedDays.has(day)){
     mySelectedDays.delete(day);
   } else {
+    if(myMonthlyLeaveDays.has(day)){
+      alert(`${currentMonth}월 ${day}일은 이미 월차로 선택되어 있습니다.\n월차 선택을 먼저 해제한 뒤 기본 휴무로 선택해주세요.`);
+      return;
+    }
+
     if(mySelectedDays.size >= 8){
       alert('기본 휴무는 최대 8일까지만 선택 가능합니다.');
       return;
@@ -1274,8 +1279,23 @@ function populateMonthlyLeaveSelect(){
   daysWrap.innerHTML = Array.from({length:lastDate}, (_,i) => {
     const day = i + 1;
     const selected = myMonthlyLeaveDays.has(day);
-    const disabled = !staff || (!selected && myMonthlyLeaveDays.size >= limit);
-    return `<button type="button" class="monthly-leave-day-btn${selected ? ' selected' : ''}${disabled ? ' disabled' : ''}" data-leave-day="${day}" ${disabled ? 'disabled' : ''}>${day}일</button>`;
+    const isBasicLeaveDay = mySelectedDays.has(day);
+    const disabled =
+      !staff ||
+      isBasicLeaveDay ||
+      (!selected && myMonthlyLeaveDays.size >= limit);
+
+    const title = isBasicLeaveDay
+      ? '이미 기본 휴무로 선택한 날짜입니다.'
+      : '';
+
+    return `<button
+      type="button"
+      class="monthly-leave-day-btn${selected ? ' selected' : ''}${disabled ? ' disabled' : ''}"
+      data-leave-day="${day}"
+      ${disabled ? 'disabled' : ''}
+      ${title ? `title="${title}"` : ''}
+    >${day}일</button>`;
   }).join('');
   selectedEl.textContent = `선택한 월차 ${myMonthlyLeaveDays.size}일 / 이번 달 최대 ${limit}일`;
 
@@ -1285,6 +1305,11 @@ function populateMonthlyLeaveSelect(){
       if(myMonthlyLeaveDays.has(day)){
         myMonthlyLeaveDays.delete(day);
       } else {
+        if(mySelectedDays.has(day)){
+          alert(`${currentMonth}월 ${day}일은 이미 기본 휴무로 선택되어 있습니다.\n기본 휴무 선택을 먼저 해제한 뒤 월차로 선택해주세요.`);
+          return;
+        }
+
         const currentLimit = getMonthlyLeaveSelectableLimit(staff);
         if(myMonthlyLeaveDays.size >= currentLimit){
           alert(`이번 달에는 월차를 최대 ${currentLimit}일까지 사용할 수 있습니다.`);
@@ -1359,6 +1384,18 @@ function paintSavedSchedules(){
 }
 
 function validateBeforeSubmit(staff){
+  const duplicatedDays = Array.from(mySelectedDays)
+    .filter(day => myMonthlyLeaveDays.has(Number(day)))
+    .sort((a,b) => Number(a) - Number(b));
+
+  if(duplicatedDays.length){
+    alert(
+      `기본 휴무와 월차를 같은 날짜에 함께 사용할 수 없습니다.\n` +
+      `중복 날짜: ${duplicatedDays.map(day => `${day}일`).join(', ')}`
+    );
+    return false;
+  }
+
   const weekendLimit = getWeekendOffLimit(staff);
   const selectedWeekendCount = getSelectedWeekendCount();
 
@@ -1925,9 +1962,15 @@ function loadMySchedule(shouldPaint = true){
 }
 
 function getAttendanceForDay(day){
-  const off = getApplicantsForDay(day);
+  const basicOff = getApplicantsForDay(day);
+  const monthlyLeaveUsers = getMonthlyLeaveUsersForDay(day);
+
+  // 기본 휴무자와 월차 사용자를 모두 실제 휴무자로 계산합니다.
+  // 같은 사람이 과거 데이터에서 두 항목에 중복 저장되어 있어도 한 번만 포함합니다.
+  const off = Array.from(new Set([...basicOff, ...monthlyLeaveUsers]));
   const working = employees.filter(name => !off.includes(name));
-  return { off, working };
+
+  return { basicOff, monthlyLeaveUsers, off, working };
 }
 
 function renderMonthlySummary(){
@@ -1948,24 +1991,27 @@ function renderMonthlySummary(){
   for(let day=1; day<=lastDate; day++){
     const date = new Date(currentYear, currentMonth - 1, day);
     const weekday = weekdayNames[date.getDay()];
-    const { off, working } = getAttendanceForDay(day);
-    const monthlyLeaveUsers = getMonthlyLeaveUsersForDay(day);
+    const { basicOff, monthlyLeaveUsers, working } = getAttendanceForDay(day);
 
     const workingText = coloredNames(working);
-    const overCapacity = isOverCapacity(day, off.length);
-    const resolution = overCapacity ? getResolutionForDay(day, off) : null;
-    const offSentence = off.length
-      ? `${coloredNames(off)}님이 휴무입니다.${overCapacity ? (resolution ? ' <strong>허용 인원에 맞게 최종 확정되었습니다.</strong>' : ` <strong>허용 인원 ${getDayCapacity(day)}명을 초과하여 일정 조율이 필요합니다.</strong>`) : ''}`
-      : `휴무자는 없습니다.`;
+
+    // 기존 조율 기준은 기본 휴무 신청 인원을 기준으로 그대로 유지합니다.
+    const overCapacity = isOverCapacity(day, basicOff.length);
+    const resolution = overCapacity ? getResolutionForDay(day, basicOff) : null;
+
+    const basicOffSentence = basicOff.length
+      ? `${coloredNames(basicOff)}님이 기본 휴무입니다.${overCapacity ? (resolution ? ' <strong>허용 인원에 맞게 최종 확정되었습니다.</strong>' : ` <strong>허용 인원 ${getDayCapacity(day)}명을 초과하여 일정 조율이 필요합니다.</strong>`) : ''}`
+      : `기본 휴무자는 없습니다.`;
+
     const monthlyLeaveSentence = monthlyLeaveUsers.length
-      ? ` (${monthlyLeaveUsers.map(name => `${shortNames[name] || name} 님이 월차 1일을 사용하였습니다.`).join(' ')})`
+      ? ` ${coloredNames(monthlyLeaveUsers)}님이 월차를 사용합니다.`
       : '';
 
     items.push(`
       <div class="summary-item">
         ${currentMonth}월 ${day}일(${weekday})에는
         ${workingText}님이 출근하며,
-        ${offSentence}${monthlyLeaveSentence}
+        ${basicOffSentence}${monthlyLeaveSentence}
       </div>
     `);
   }
