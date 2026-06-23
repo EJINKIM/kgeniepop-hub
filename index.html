@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>K지니POP 휴무 신청</title>
+<title>K GENIE POP TIMETABLE - THE PERFECT BREAK</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,23 +52,68 @@ body::before{
 
 .container{max-width:1440px;margin:auto;padding:30px;}
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;gap:14px;}
-.logo{
-  font-size:28px;
-  font-weight:800;
-  letter-spacing:.02em;
-  color:#ffffff;
-  text-shadow:
-    0 1px 0 rgba(255,255,255,.75),
-    0 10px 26px rgba(177,180,221,.32);
-  -webkit-text-stroke: .45px rgba(177,180,221,.55);
+.brand-lockup{
+  position:relative;
+  display:inline-flex;
+  flex-direction:column;
+  gap:5px;
+  padding:7px 0 8px 18px;
   text-transform:uppercase;
 }
-.logo span{
-  background:linear-gradient(90deg,#ffffff,#f6bfe6,#d2f9fe,#ffffff);
+.brand-lockup::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:4px;
+  bottom:4px;
+  width:4px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#79e6dc,#9fc6ff 45%,#e5a8ee);
+  box-shadow:0 0 20px rgba(159,198,255,.55);
+}
+.brand-main{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:8px;
+  font-size:29px;
+  line-height:1;
+  font-weight:900;
+  letter-spacing:.045em;
+  color:#53627b;
+  text-shadow:0 8px 24px rgba(148,163,184,.18);
+}
+.brand-main .brand-k{
+  background:linear-gradient(90deg,#516479,#7f6db7,#cf8fc5);
   -webkit-background-clip:text;
   background-clip:text;
   color:transparent;
-  -webkit-text-stroke: .35px rgba(255,255,255,.35);
+}
+.brand-main .brand-time{
+  font-weight:700;
+  color:#7e8ca2;
+  letter-spacing:.11em;
+}
+.brand-sub{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.24em;
+  color:#9a8dbb;
+}
+.brand-sub::before{
+  content:"";
+  width:34px;
+  height:1px;
+  background:linear-gradient(90deg,#82d8d0,#b9a3db);
+}
+.brand-sub span{
+  background:linear-gradient(90deg,#7acfc6,#8ea9dc,#cc91c5);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
 }
 .status-pill{
   font-size:13px;
@@ -407,7 +452,9 @@ body::before{
 @media(max-width:900px){
   .container{padding:16px;}
   .topbar{margin-bottom:18px;align-items:flex-start;flex-direction:column;}
-  .logo{font-size:22px;}
+  .brand-main{font-size:22px;}
+  .brand-main .brand-time{font-size:15px;}
+  .brand-sub{font-size:9px;letter-spacing:.18em;}
   .hero{grid-template-columns:1fr;gap:16px;}
   .sidebar{position:static;padding:20px;}
   .calendar-card{padding:16px;}
@@ -446,13 +493,29 @@ body::before{
 .monthly-leave-selected{margin-top:10px;text-align:center;font-size:12px;font-weight:900;color:#7e22ce;}
 @media(max-width:430px){.monthly-leave-days{grid-template-columns:repeat(4,1fr);}}
 
+
+@media(max-width:430px){
+  .brand-lockup{padding-left:14px;gap:4px;}
+  .brand-lockup::before{width:3px;}
+  .brand-main{font-size:19px;gap:6px;}
+  .brand-main .brand-time{font-size:12px;letter-spacing:.08em;}
+  .brand-sub{font-size:8px;letter-spacing:.14em;gap:7px;}
+  .brand-sub::before{width:22px;}
+}
+
 </style>
 </head>
 <body>
 
 <div class="container">
   <div class="topbar">
-    <div class="logo">K GENIE POP<span> TIMETABLE</span></div>
+    <div class="brand-lockup" aria-label="K GENIE POP TIMETABLE - THE PERFECT BREAK">
+      <div class="brand-main">
+        <span class="brand-k">K GENIE POP</span>
+        <span class="brand-time">TIMETABLE</span>
+      </div>
+      <div class="brand-sub"><span>THE PERFECT BREAK</span></div>
+    </div>
     <div class="status-pill" id="saveStatus">달력 준비 중</div>
   </div>
 
