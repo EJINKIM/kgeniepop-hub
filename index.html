@@ -503,6 +503,281 @@ body::before{
   .brand-sub::before{width:22px;}
 }
 
+
+/* ===== 모바일 집중 보기 ===== */
+.mobile-section-summary{
+  display:none;
+  list-style:none;
+  cursor:pointer;
+  font-weight:900;
+  color:#59677a;
+}
+.mobile-section-summary::-webkit-details-marker{display:none;}
+
+@media(max-width:700px){
+  body{
+    background:
+      linear-gradient(180deg,#f7fbff 0%,#fff8fc 50%,#f8fbff 100%);
+    background-attachment:scroll;
+  }
+  .container{padding:10px;}
+  .topbar{
+    gap:8px;
+    margin-bottom:12px;
+    padding:4px 2px;
+  }
+  .brand-lockup{width:100%;}
+  .status-pill{
+    align-self:flex-start;
+    font-size:10px;
+    padding:6px 9px;
+    box-shadow:none;
+  }
+  .card{
+    border-radius:20px;
+    box-shadow:0 10px 28px rgba(148,163,184,.16);
+    backdrop-filter:blur(14px);
+  }
+  .sidebar{padding:16px;}
+  .sidebar h2{font-size:20px;}
+  .helper{font-size:12px;margin-bottom:12px;}
+
+  .gem-vault{
+    padding:15px;
+    border-radius:18px;
+  }
+  .gem-count{font-size:39px;}
+  .gem-icon{font-size:28px;}
+  .gem-message{font-size:12px;}
+  .gem-meta{font-size:10px;}
+
+  .monthly-leave-box,
+  .remaining{margin-top:12px;}
+  .remaining{
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    padding:14px 16px;
+  }
+  .remaining h1{font-size:38px;}
+  .remaining small{grid-column:1/-1;}
+
+  .mobile-collapsible{
+    margin-top:12px;
+    border:1px solid rgba(203,213,225,.58);
+    border-radius:16px;
+    background:rgba(255,255,255,.54);
+    overflow:hidden;
+  }
+  .mobile-section-summary{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:13px 14px;
+    font-size:13px;
+  }
+  .mobile-section-summary::after{
+    content:"＋";
+    color:#9b87d4;
+    font-size:18px;
+  }
+  .mobile-collapsible[open] > .mobile-section-summary::after{content:"−";}
+  .mobile-collapsible > .rules{margin:0;padding:0 10px 10px;}
+  .rule{
+    font-size:12px;
+    padding:9px 10px;
+    border-radius:12px;
+  }
+
+  .submit{
+    position:sticky;
+    bottom:10px;
+    z-index:40;
+    margin-top:14px;
+    padding:15px;
+    border-radius:16px;
+  }
+
+  .calendar-card{padding:13px 10px;}
+  .calendar-header{margin-bottom:12px;}
+  .calendar-header h2{font-size:18px;}
+  .btn{width:36px;height:36px;border-radius:12px;}
+  .weekdays{font-size:10px;margin-bottom:6px;}
+  .calendar{gap:3px;}
+  .day{
+    min-height:57px;
+    padding:6px 4px;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(148,163,184,.10);
+  }
+  .empty-day{min-height:57px;}
+  .day:hover{transform:none;}
+  .day-number{font-size:12px;}
+  .staff-list{
+    gap:3px;
+    margin-top:7px;
+    align-items:center;
+  }
+  .staff-tag{
+    width:8px;
+    height:8px;
+    min-width:8px;
+    padding:0;
+    border-radius:50%;
+    font-size:0;
+    box-shadow:none;
+    background:currentColor;
+  }
+  .monthly-leave-tag{
+    width:15px;
+    height:15px;
+    padding:0;
+    overflow:hidden;
+    color:transparent;
+    font-size:0;
+    position:relative;
+  }
+  .monthly-leave-tag::after{
+    content:"🌙";
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#7e22ce;
+    font-size:10px;
+  }
+  .slot{display:none;}
+  .legend{
+    gap:5px;
+    margin-top:12px;
+  }
+  .badge{
+    font-size:10px;
+    padding:5px 7px;
+    gap:4px;
+    box-shadow:none;
+  }
+  .dot{width:7px;height:7px;}
+
+  .conflict-card,
+  .summary-card{
+    margin-top:14px;
+    padding:14px 12px;
+  }
+  .conflict-head{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .conflict-head h3{font-size:17px;line-height:1.35;}
+  .conflict-head small{font-size:11px;}
+  .guide-open-btn{width:100%;}
+
+  .conflict-item{
+    padding:12px;
+    border-radius:16px;
+  }
+  .conflict-date{
+    align-items:flex-start;
+    font-size:13px;
+    line-height:1.45;
+  }
+  .conflict-status{flex-shrink:0;}
+  .conflict-guide{font-size:11px;}
+  .conflict-person{
+    grid-template-columns:1fr;
+    gap:6px;
+    padding:8px 0;
+    border-top:1px dashed rgba(203,213,225,.55);
+  }
+  .conflict-person:first-of-type{border-top:0;}
+  .approval-row{
+    margin:2px 0 8px;
+    padding:7px 8px;
+    font-size:11px;
+  }
+  .approval-row.auto-target .auto-note{display:block;}
+  .conflict-actions{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .small-action{width:100%;padding:12px;}
+  .manager-row{grid-template-columns:1fr;}
+  .manager-note{font-size:10px;}
+
+  .compact-details{
+    margin-top:10px;
+    border:1px solid rgba(203,213,225,.58);
+    border-radius:13px;
+    background:rgba(255,255,255,.52);
+    overflow:hidden;
+  }
+  .compact-details > summary{
+    cursor:pointer;
+    list-style:none;
+    padding:11px 12px;
+    color:#6b7280;
+    font-size:11px;
+    font-weight:900;
+  }
+  .compact-details > summary::-webkit-details-marker{display:none;}
+  .compact-details > summary::after{
+    content:" 보기＋";
+    color:#a78bfa;
+  }
+  .compact-details[open] > summary::after{content:" 닫기−";}
+  .compact-details > .preference-help,
+  .compact-details > .manager-content{
+    margin:0;
+    border:0;
+    border-radius:0;
+  }
+  .manager-content{padding:0 10px 10px;}
+
+  .summary-title{margin-bottom:8px;}
+  .summary-title h3{font-size:17px;}
+  .summary-details > summary{
+    display:block;
+    list-style:none;
+    cursor:pointer;
+    padding:10px 12px;
+    border-radius:13px;
+    background:rgba(255,255,255,.65);
+    color:#64748b;
+    font-size:12px;
+    font-weight:900;
+  }
+  .summary-details > summary::-webkit-details-marker{display:none;}
+  .summary-details > summary::after{content:" 펼쳐보기 ＋";float:right;color:#a78bfa;}
+  .summary-details[open] > summary::after{content:" 접기 −";}
+  .summary-list{
+    margin-top:8px;
+    max-height:58vh;
+    overflow:auto;
+  }
+  .summary-item{
+    padding:10px 11px;
+    font-size:11.5px;
+    border-radius:13px;
+    box-shadow:none;
+  }
+
+  .guide-modal{padding:8px;}
+  .guide-modal-panel{
+    max-height:94vh;
+    padding:22px 15px 16px;
+    border-radius:20px;
+  }
+  .guide-modal-panel h2{font-size:19px;padding-right:32px;}
+  .guide-step{
+    grid-template-columns:28px 1fr;
+    gap:9px;
+    padding:11px 0;
+  }
+  .guide-step-number{width:27px;height:27px;border-radius:9px;font-size:12px;}
+}
+
 </style>
 </head>
 <body>
@@ -567,15 +842,18 @@ body::before{
         <small id="leaveLimitText">총 8회 선택 가능</small>
       </div>
 
-      <div class="rules">
-        <div class="rule" id="leaveRule">✓ 직원별 월 8회 휴무 신청</div>
-        <div class="rule">✓ 월차는 매달 1일 발생 · 미사용분 이월 · 월 최대 3일 사용</div>
-        <div class="rule">✓ 매월 15일부터 다음 달 휴무 신청 가능</div>
-        <div class="rule">✓ 신청 마감일 : 매월 25일 (23:59까지)</div>
-        <div class="rule">✓ 평일 2명·토/일 1명 초과 시 객관적 기준으로 조율</div>
-        <div class="rule">✓ 휴무 날짜를 자발적으로 옮기면 평화의 보석 💎 1개 적립</div>
-        <div class="rule">✓ 두 분의 이사 중 한 분이 본인 계정과 PIN으로 익명 확정</div>
-      </div>
+      <details class="mobile-collapsible" open>
+        <summary class="mobile-section-summary">📌 신청 규칙 한눈에 보기</summary>
+        <div class="rules">
+          <div class="rule" id="leaveRule">✓ 직원별 월 8회 휴무 신청</div>
+          <div class="rule">✓ 월차는 매달 1일 발생 · 미사용분 이월 · 월 최대 3일 사용</div>
+          <div class="rule">✓ 매월 15일부터 다음 달 휴무 신청 가능</div>
+          <div class="rule">✓ 신청 마감일 : 매월 25일 (23:59까지)</div>
+          <div class="rule">✓ 평일 2명·토/일 1명 초과 시 객관적 기준으로 조율</div>
+          <div class="rule">✓ 보석은 저장된 최초 조율 대상자가 다른 날짜까지 최종 저장한 뒤 적립</div>
+          <div class="rule">✓ 두 분의 이사 중 한 분이 본인 계정과 PIN으로 익명 확정</div>
+        </div>
+      </details>
 
       <button class="submit" id="submitBtn">신청 완료하기</button>
       <div class="notice" id="noticeBox"></div>
@@ -612,7 +890,10 @@ body::before{
           <h3>월간 출근/휴무 요약</h3>
           <small>신청 완료 기준 자동 반영</small>
         </div>
-        <div class="summary-list" id="monthlySummary"></div>
+        <details class="summary-details">
+          <summary>날짜별 출근·휴무 내역</summary>
+          <div class="summary-list" id="monthlySummary"></div>
+        </details>
       </div>
     </div>
   </div>
@@ -648,7 +929,7 @@ body::before{
     </div>
     <div class="guide-step">
       <span class="guide-step-number">6</span>
-      <div><strong>자발적으로 날짜를 옮기면 평화의 보석 💎 1개가 적립돼요.</strong><p>초과 조율에서 본인이 직접 다른 날짜로 변경하면 평화의 보석 1개가 반짝 적립됩니다. 이 보석은 다음 주나 다음 달 초과 조율에서 사용할 수 있는 우선권이에요. 실제 우선 배정을 받으면 보석 1개가 사용되며, 같은 날짜에서는 중복 적립되지 않습니다. 보석을 4개 이상 모으면 재미있는 칭호인 <b>평화의 보석왕관</b>을 받고 왕좌 카드가 열려요. 보석 개수는 직원 평가나 업무 능력과는 전혀 관계가 없는, 배려를 기억하기 위한 즐거운 기록입니다.</p></div>
+      <div><strong>평화의 보석은 실제 일정 변경을 끝낸 뒤 적립돼요.</strong><p>단순히 중복 날짜를 눌렀다가 취소하는 것으로는 적립되지 않습니다. 신청 완료로 저장된 최초 조율 대상자 중, 본인의 조율 의사를 <b>변경 가능</b>으로 저장하고 기존 날짜를 양보한 뒤 다른 날짜를 골라 기본 휴무 8일을 다시 최종 저장해야 보석 1개가 적립됩니다. 초과 신청을 마지막으로 만들어 낸 직원과 최초 명단에 없던 추가 신청자는 해당 건의 보석 적립 대상에서 제외됩니다. 같은 날짜에서는 한 번만 적립되며, 실제 우선 배정을 받으면 보석 1개가 사용됩니다. 보석을 4개 이상 모으면 <b>평화의 보석왕관</b>과 왕좌 카드가 열립니다.</p></div>
     </div>
     <div class="guide-step">
       <span class="guide-step-number">7</span>
@@ -1094,14 +1375,93 @@ function isOverCapacity(day, applicantCount){
 }
 
 function getConflictDays(){
+  // 조율과 보석 적립은 반드시 '신청 완료'로 저장된 일정만 기준으로 합니다.
   const lastDate = new Date(currentYear, currentMonth, 0).getDate();
   const result = [];
   for(let day=1; day<=lastDate; day++){
-    const applicants = getApplicantsForDay(day);
+    const applicants = getSavedApplicantsForDay(day);
     const capacity = getDayCapacity(day);
     if(applicants.length > capacity) result.push({ day, applicants, capacity });
   }
   return result;
+}
+
+function getConflictCase(day){
+  return getConflictMonthData().cases?.[day] || null;
+}
+
+function getPendingYield(staff, historyKey){
+  return conflictData?.pendingYields?.[staff]?.[historyKey] || null;
+}
+
+function buildConflictCaseUpdates(staff, newDays, now){
+  const updates = {};
+  const key = monthKey();
+  const monthData = allSchedules[key] || {};
+  const lastDate = new Date(currentYear, currentMonth, 0).getDate();
+
+  for(let day=1; day<=lastDate; day++){
+    const applicants = employees.filter(name => {
+      const days = name === staff
+        ? newDays
+        : (monthData[name]?.days || []).map(Number);
+      return days.includes(day);
+    });
+    const capacity = getDayCapacity(day);
+    const existingCase = conflictData?.[key]?.cases?.[day];
+
+    if(applicants.length > capacity && !existingCase){
+      const ordered = applicants.slice().sort((a,b) => {
+        const timeA = a === staff ? now : Number(monthData[a]?.updatedAt || 0);
+        const timeB = b === staff ? now : Number(monthData[b]?.updatedAt || 0);
+        return timeA - timeB;
+      });
+      const conflictTrigger = ordered[ordered.length - 1];
+      updates[`conflictCoordination/${key}/cases/${day}`] = {
+        initialApplicants: applicants,
+        eligibleGemApplicants: applicants.filter(name => name !== conflictTrigger),
+        conflictTrigger,
+        capacity,
+        createdAt: now,
+        status: 'open'
+      };
+    }
+  }
+  return updates;
+}
+
+function buildPendingGemAwards(staff, newDays, now){
+  const updates = {};
+  const pending = conflictData?.pendingYields?.[staff] || {};
+  let awardCount = 0;
+
+  Object.entries(pending).forEach(([historyKey, item]) => {
+    if(!item || item.status !== 'waitingReplacement') return;
+    const originalDay = Number(item.originalDay);
+    const baseDays = (item.daysAfterYield || []).map(Number);
+    const hasReplacement = newDays.some(day => !baseDays.includes(Number(day)));
+
+    if(newDays.includes(originalDay) || !hasReplacement || newDays.length !== 8) return;
+
+    awardCount += 1;
+    updates[`conflictCoordination/pendingYields/${staff}/${historyKey}/status`] = 'completed';
+    updates[`conflictCoordination/pendingYields/${staff}/${historyKey}/completedAt`] = now;
+    updates[`conflictCoordination/yieldHistory/${staff}/${historyKey}`] = {
+      month: item.month,
+      day: originalDay,
+      yieldedAt: item.yieldedAt,
+      completedAt: now,
+      replacementConfirmed: true,
+      type: item.type || 'voluntary'
+    };
+  });
+
+  if(awardCount > 0){
+    updates[`conflictCoordination/yieldCredits/${staff}/balance`] = getYieldCredit(staff) + awardCount;
+    updates[`conflictCoordination/yieldCredits/${staff}/updatedAt`] = now;
+  }
+
+  return { updates, awardCount };
 }
 
 function getConflictMonthData(){
@@ -1200,8 +1560,10 @@ function renderConflictPanel(){
     const weekday = weekdayNames[date.getDay()];
     const resolution = getResolutionForDay(day, applicants);
     const recommended = getRecommendedApplicants(applicants, capacity, day);
+    const conflictCase = getConflictCase(day);
     const rows = applicants.map(name => {
       const savedPref = monthData.preferences?.[name]?.[day] || '';
+      const gemEligible = (conflictCase?.eligibleGemApplicants || []).includes(name);
       const canEdit = name === selectedStaff;
       const yieldCount = getYieldCount(name);
       const yieldCredit = getYieldCredit(name);
@@ -1209,7 +1571,7 @@ function renderConflictPanel(){
       return `
         <div class="conflict-person">
           <span class="preference-label" style="color:${staffTextColors[name] || '#475569'}">
-            ${shortNames[name] || name}<br><small>평화의 보석 💎 ${yieldCredit}개 · 누적 배려 ${yieldCount}회</small>
+            ${shortNames[name] || name}<br><small>평화의 보석 💎 ${yieldCredit}개 · 누적 배려 ${yieldCount}회${gemEligible ? ' · 이번 건 적립 가능' : ' · 이번 건 적립 제외'}</small>
           </span>
           ${canEdit ? `
             <select id="pref-${day}-${name}">
@@ -1236,29 +1598,37 @@ function renderConflictPanel(){
           <span>${currentMonth}월 ${day}일(${weekday}) <span class="soft-divider">·</span> <span class="application-count">신청 ${applicants.length}명</span> <span class="soft-divider">/</span> <span class="capacity-text">허용 ${capacity}명</span></span>
           <span class="conflict-status">${resolution ? '최종 확정' : '조율 필요'}</span>
         </div>
-        <div class="conflict-guide"><span class="cheer-note">평화롭고, 공정하고, 스무스하게 GO~ 😊</span><br>먼저 신청자끼리 조율해 주세요. 변경 가능한 직원은 아래 버튼으로 자발적으로 날짜를 옮길 수 있어요.<br><small>직원끼리 합의가 되지 않을 때만 이사가 최종 결정합니다.</small><br>${approvedText}<br><small>자발적으로 날짜를 옮기면 평화의 보석 💎 1개가 적립되고, 다음 초과 조율에서 우선 배정될 때 보석 1개가 사용됩니다.</small></div>
-        <div class="preference-help">
-          <div><strong>필수 휴무</strong> · 병원, 가족 행사, 예약, 시험 일정 등으로 날짜 변경이 어려운 경우</div>
-          <div><strong>희망 휴무</strong> · 가능하면 해당 날짜에 쉬는 것을 선호하는 경우</div>
-          <div><strong>변경 가능</strong> · 필요하면 다른 날짜로 옮겨도 괜찮은 경우</div>
-          <div>개인적인 상세 사유는 공개되지 않으며, 선택한 조율 단계만 직원들에게 표시됩니다.</div>
-        </div>
+        <div class="conflict-guide"><span class="cheer-note">평화롭고, 공정하고, 스무스하게 GO~ 😊</span><br>먼저 신청자끼리 조율해 주세요. 변경 가능한 직원은 아래 버튼으로 자발적으로 날짜를 옮길 수 있어요.<br><small>직원끼리 합의가 되지 않을 때만 이사가 최종 결정합니다.</small><br>${approvedText}<br><small>보석은 저장된 최초 조율 대상자가 ‘변경 가능’을 선택하고 다른 날짜까지 최종 저장한 경우에만 적립됩니다. 단순 선택 취소에는 적립되지 않아요.</small></div>
+        <details class="compact-details">
+          <summary>조율 선택 기준 자세히</summary>
+          <div class="preference-help">
+            <div><strong>필수 휴무</strong> · 병원, 가족 행사, 예약, 시험 일정 등으로 날짜 변경이 어려운 경우</div>
+            <div><strong>희망 휴무</strong> · 가능하면 해당 날짜에 쉬는 것을 선호하는 경우</div>
+            <div><strong>변경 가능</strong> · 필요하면 다른 날짜로 옮겨도 괜찮은 경우</div>
+            <div>개인적인 상세 사유는 공개되지 않으며, 선택한 조율 단계만 직원들에게 표시됩니다.</div>
+          </div>
+        </details>
         ${rows}
         ${selectedStaff && applicants.includes(selectedStaff) ? `
           <div class="conflict-actions">
             <button class="small-action" type="button" onclick="saveConflictPreference(${day}, '${selectedStaff}')">내 조율 의사 저장</button>
             <button class="small-action" type="button" onclick="voluntaryYield(${day}, '${selectedStaff}')">💎 이 날짜 배려하고 다른 날 선택하기</button>
           </div>` : ''}
-        <div class="manager-row">
-          <select id="managerName-${day}" aria-label="관리자(이사) 본인 접속">
-            <option value="">이사 선택</option>
-            <option value="정부영">정부영 이사</option>
-            <option value="윤희준">윤희준 이사</option>
-          </select>
-          <input type="password" id="managerPin-${day}" placeholder="이사 전용 PIN 입력" />
-          <button class="small-action manager" type="button" onclick="finalizeConflict(${day})">${resolution ? '확정 다시 저장' : '직원 조율 불가 시 최종 확정'}</button>
-        </div>
-        <div class="manager-note">먼저 신청자끼리 조율하고, 변경 가능한 직원이 자발적으로 날짜를 옮기는 것을 원칙으로 합니다. 직원 간 조율이 끝내 되지 않을 때만 두 분의 이사 중 한 분이 본인 계정과 PIN으로 익명 확정합니다. 직원 화면과 월간 요약에는 확정한 이사 이름이 표시되지 않습니다.</div>
+        <details class="compact-details">
+          <summary>직원끼리 조율되지 않을 때만 이사 확정</summary>
+          <div class="manager-content">
+            <div class="manager-row">
+              <select id="managerName-${day}" aria-label="관리자(이사) 본인 접속">
+                <option value="">이사 선택</option>
+                <option value="정부영">정부영 이사</option>
+                <option value="윤희준">윤희준 이사</option>
+              </select>
+              <input type="password" id="managerPin-${day}" placeholder="이사 전용 PIN 입력" />
+              <button class="small-action manager" type="button" onclick="finalizeConflict(${day})">${resolution ? '확정 다시 저장' : '직원 조율 불가 시 최종 확정'}</button>
+            </div>
+            <div class="manager-note">먼저 신청자끼리 조율하고, 변경 가능한 직원이 자발적으로 날짜를 옮기는 것을 원칙으로 합니다. 직원 간 조율이 끝내 되지 않을 때만 두 분의 이사 중 한 분이 본인 계정과 PIN으로 익명 확정합니다. 직원 화면과 월간 요약에는 확정한 이사 이름이 표시되지 않습니다.</div>
+          </div>
+        </details>
       </div>`;
   }).join('');
 }
@@ -1308,33 +1678,74 @@ function voluntaryYield(day, staff){
     alert('본인의 PIN 번호를 입력해주세요.');
     return;
   }
-  if(!confirm(`${currentMonth}월 ${day}일 휴무 신청을 취소하고 다른 날짜를 선택하시겠어요?\n평화의 보석 💎 1개가 적립됩니다.`)) return;
   if(!db){ alert('Firebase 연결을 확인해주세요.'); return; }
 
   const currentDays = (allSchedules[monthKey()]?.[staff]?.days || []).map(Number);
   if(!currentDays.includes(Number(day))){
-    alert('현재 신청되어 있는 휴무 날짜가 아닙니다.');
+    alert('보석 적립 대상은 신청 완료로 저장된 휴무 날짜만 가능합니다.');
+    return;
+  }
+
+  const conflictCase = getConflictCase(day);
+  if(!conflictCase || !Array.isArray(conflictCase.initialApplicants)){
+    alert('최초 조율 대상 명단이 확정된 건이 아닙니다. 단순 중복 선택에는 보석이 적립되지 않습니다.');
+    return;
+  }
+  if(!conflictCase.initialApplicants.includes(staff)){
+    alert('이 날짜의 최초 조율 대상 명단에 포함되지 않아 보석 적립 대상이 아닙니다.');
+    return;
+  }
+  if(!(conflictCase.eligibleGemApplicants || []).includes(staff)){
+    alert('초과 신청을 마지막으로 만들어 낸 신청자는 해당 조율 건의 보석 적립 대상에서 제외됩니다.');
+    return;
+  }
+
+  const preference = getConflictMonthData().preferences?.[staff]?.[day] || '';
+  if(preference !== 'flexible'){
+    alert('먼저 조율 의사를 ‘변경 가능’으로 선택하고 저장해주세요.');
     return;
   }
 
   const historyKey = `${monthKey()}-${String(day).padStart(2,'0')}`;
-  const alreadyYielded = conflictData?.yieldHistory?.[staff]?.[historyKey];
-  const now = Date.now();
-  const updates = {};
-  updates[`schedules/${monthKey()}/${staff}/days`] = currentDays.filter(d => d !== Number(day));
-  updates[`conflictCoordination/${monthKey()}/preferences/${staff}/${day}`] = null;
-
-  if(!alreadyYielded){
-    updates[`conflictCoordination/yieldHistory/${staff}/${historyKey}`] = {
-      month: monthKey(), day:Number(day), yieldedAt:now, type:'voluntary'
-    };
-    updates[`conflictCoordination/yieldCredits/${staff}/balance`] = getYieldCredit(staff) + 1;
-    updates[`conflictCoordination/yieldCredits/${staff}/updatedAt`] = now;
+  if(conflictData?.yieldHistory?.[staff]?.[historyKey]){
+    alert('이미 보석 적립이 완료된 조율 건입니다.');
+    return;
+  }
+  if(getPendingYield(staff, historyKey)?.status === 'waitingReplacement'){
+    alert('이미 날짜 변경이 진행 중입니다. 다른 날짜를 선택하고 신청 완료하기를 눌러주세요.');
+    return;
   }
 
+  if(!confirm(
+    `${currentMonth}월 ${day}일 휴무를 양보하시겠어요?\n\n` +
+    `지금은 보석이 바로 적립되지 않습니다.\n` +
+    `다른 날짜를 선택해 기본 휴무 8일을 다시 저장하면 💎 1개가 적립됩니다.`
+  )) return;
+
+  const daysAfterYield = currentDays.filter(d => d !== Number(day));
+  const now = Date.now();
+  const updates = {};
+  updates[`schedules/${monthKey()}/${staff}/days`] = daysAfterYield;
+  updates[`schedules/${monthKey()}/${staff}/updatedAt`] = now;
+  updates[`conflictCoordination/${monthKey()}/preferences/${staff}/${day}`] = null;
+  updates[`conflictCoordination/pendingYields/${staff}/${historyKey}`] = {
+    month: monthKey(),
+    originalDay: Number(day),
+    caseCreatedAt: Number(conflictCase.createdAt || 0),
+    daysAfterYield,
+    yieldedAt: now,
+    type: 'voluntary',
+    status: 'waitingReplacement'
+  };
+
   db.ref().update(updates).then(() => {
-    showNotice(`${shortNames[staff] || staff}님이 ${currentMonth}월 ${day}일을 양보했습니다. 다른 날짜를 선택해주세요.`, 'success');
-    alert('💎 반짝! 평화의 보석 1개가 적립되었어요.\n이번 배려는 다음 조율 때 우선권으로 돌아옵니다. 이제 다른 휴무 날짜를 선택해 주세요.');
+    mySelectedDays.delete(Number(day));
+    showNotice(`${shortNames[staff] || staff}님의 날짜 양보가 등록되었습니다. 다른 날짜를 선택해 최종 저장해주세요.`, 'success');
+    alert(
+      '날짜 양보가 등록되었어요.\n\n' +
+      '다른 휴무 날짜를 선택한 뒤 ‘신청 완료하기’를 눌러야\n' +
+      '평화의 보석 💎 1개가 최종 적립됩니다.'
+    );
   }).catch(error => {
     console.error(error);
     alert('양보 처리 저장에 실패했습니다.');
@@ -1385,18 +1796,27 @@ function finalizeConflict(day){
   const previousApproved = previousResolution?.approved || [];
   const now = Date.now();
 
+  const conflictCase = getConflictCase(day);
+
   displaced.forEach(name => {
     const currentDays = (allSchedules[monthKey()]?.[name]?.days || []).map(Number);
-    updates[`schedules/${monthKey()}/${name}/days`] = currentDays.filter(d => d !== Number(day));
+    const daysAfterYield = currentDays.filter(d => d !== Number(day));
+    updates[`schedules/${monthKey()}/${name}/days`] = daysAfterYield;
+    updates[`schedules/${monthKey()}/${name}/updatedAt`] = now;
 
-    // 같은 조율을 다시 저장해도 우선권이 중복 적립되지 않도록 새 양보자만 반영합니다.
-    if(!previousDisplaced.includes(name)){
-      const historyKey = `${monthKey()}-${String(day).padStart(2,'0')}`;
-      updates[`conflictCoordination/yieldHistory/${name}/${historyKey}`] = {
-        month: monthKey(), day:Number(day), yieldedAt:now, approved
+    // 이사 결정으로 날짜가 빠진 경우에도 다른 날짜를 최종 저장한 뒤에만 보석을 적립합니다.
+    const historyKey = `${monthKey()}-${String(day).padStart(2,'0')}`;
+    const isGemEligible = (conflictCase?.eligibleGemApplicants || []).includes(name);
+    if(!previousDisplaced.includes(name) && isGemEligible && !conflictData?.yieldHistory?.[name]?.[historyKey]){
+      updates[`conflictCoordination/pendingYields/${name}/${historyKey}`] = {
+        month: monthKey(),
+        originalDay: Number(day),
+        caseCreatedAt: Number(conflictCase?.createdAt || 0),
+        daysAfterYield,
+        yieldedAt: now,
+        type: 'managerDisplacement',
+        status: 'waitingReplacement'
       };
-      updates[`conflictCoordination/yieldCredits/${name}/balance`] = getYieldCredit(name) + 1;
-      updates[`conflictCoordination/yieldCredits/${name}/updatedAt`] = now;
     }
   });
 
@@ -1419,6 +1839,7 @@ function finalizeConflict(day){
   previousDisplaced.filter(name => approved.includes(name)).forEach(name => {
     const historyKey = `${monthKey()}-${String(day).padStart(2,'0')}`;
     updates[`conflictCoordination/yieldHistory/${name}/${historyKey}`] = null;
+    updates[`conflictCoordination/pendingYields/${name}/${historyKey}`] = null;
     updates[`conflictCoordination/yieldCredits/${name}/balance`] = Math.max(0, getYieldCredit(name) - 1);
     updates[`conflictCoordination/yieldCredits/${name}/updatedAt`] = now;
   });
@@ -1587,15 +2008,28 @@ document.getElementById('submitBtn').addEventListener('click', () => {
   }
   if(!db){ alert('Firebase 연결을 확인해주세요.'); return; }
 
-  db.ref(`schedules/${monthKey()}/${staff}`).set({
+  const now = Date.now();
+  const newDays = Array.from(mySelectedDays).sort((a,b) => a-b);
+  const updates = {};
+
+  updates[`schedules/${monthKey()}/${staff}`] = {
     name: staff,
-    days: Array.from(mySelectedDays).sort((a,b) => a-b),
+    days: newDays,
     monthlyLeaveDays: hasMonthlyLeave() ? Array.from(myMonthlyLeaveDays).sort((a,b) => a-b) : [],
     monthlyLeaveDay: null,
-    updatedAt: Date.now()
-  }).then(() => {
-    showNotice(`${staff}님의 ${currentYear}년 ${currentMonth}월 휴무 신청이 저장되었습니다.`, 'success');
-    alert(`${staff}님의 ${currentYear}년 ${currentMonth}월 휴무 신청이 저장되었습니다.`);
+    updatedAt: now
+  };
+
+  Object.assign(updates, buildConflictCaseUpdates(staff, newDays, now));
+  const gemResult = buildPendingGemAwards(staff, newDays, now);
+  Object.assign(updates, gemResult.updates);
+
+  db.ref().update(updates).then(() => {
+    const gemMessage = gemResult.awardCount > 0
+      ? `\n💎 다른 날짜까지 최종 저장되어 평화의 보석 ${gemResult.awardCount}개가 적립되었습니다!`
+      : '';
+    showNotice(`${staff}님의 ${currentYear}년 ${currentMonth}월 휴무 신청이 저장되었습니다.${gemMessage}`, 'success');
+    alert(`${staff}님의 ${currentYear}년 ${currentMonth}월 휴무 신청이 저장되었습니다.${gemMessage}`);
   }).catch(error => {
     showNotice('저장 실패. Firebase 설정을 확인해주세요.', 'error');
     alert('저장 실패');
