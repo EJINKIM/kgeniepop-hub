@@ -282,6 +282,25 @@ body::before{
 }
 .summary-item strong{font-weight:900;color:#334155;}
 
+
+.conflict-card{margin-top:22px;padding:22px;}
+.conflict-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;}
+.conflict-head h3{font-size:20px;color:#475569;letter-spacing:-.035em;}
+.conflict-head small{color:var(--sub);}
+.conflict-list{display:grid;gap:12px;}
+.conflict-item{background:rgba(255,255,255,.66);border:1px solid rgba(245,158,11,.32);border-radius:20px;padding:15px;box-shadow:0 8px 22px rgba(148,163,184,.12);}
+.conflict-item.resolved{border-color:rgba(34,197,94,.42);background:rgba(240,253,244,.62);}
+.conflict-date{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font-weight:900;color:#475569;}
+.conflict-status{font-size:11px;font-weight:900;padding:5px 8px;border-radius:999px;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;}
+.conflict-item.resolved .conflict-status{background:#f0fdf4;color:#15803d;border-color:#bbf7d0;}
+.conflict-person{display:grid;grid-template-columns:minmax(72px,auto) 1fr;gap:10px;align-items:center;margin-top:8px;}
+.conflict-person select,.manager-row input{width:100%;padding:10px 11px;border-radius:12px;border:1px solid rgba(203,213,225,.8);background:rgba(255,255,255,.9);color:#475569;outline:none;}
+.preference-label{font-size:12px;color:#64748b;font-weight:700;}
+.conflict-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.small-action{border:none;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:900;cursor:pointer;background:#ede9fe;color:#6d28d9;}
+.small-action.manager{background:#dcfce7;color:#166534;}
+.manager-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px;}
+.conflict-empty{padding:18px;border-radius:18px;background:rgba(255,255,255,.55);color:#64748b;text-align:center;}
 .summary-name{
   display:inline-block;
   font-weight:900;
@@ -291,6 +310,12 @@ body::before{
   background:rgba(255,255,255,.72);
   box-shadow:0 4px 12px rgba(148,163,184,.13);
 }
+
+
+.conflict-guide{margin:8px 0 12px;padding:10px 12px;border-radius:14px;background:rgba(255,247,237,.8);color:#9a3412;font-size:12px;line-height:1.55;}
+.approval-row{display:flex;align-items:center;gap:8px;margin:6px 0 10px 82px;font-size:12px;color:#475569;font-weight:700;}
+.approval-row input{width:16px;height:16px;}
+.preference-label small{font-size:10px;color:#94a3b8;font-weight:700;}
 
 @media(max-width:900px){
   .container{padding:16px;}
@@ -367,7 +392,7 @@ body::before{
         <div class="rule">✓ 2026년 7월부터 기본 휴무 8일 + 월차 1일 별도 선택</div>
         <div class="rule">✓ 매월 15일부터 다음 달 휴무 신청 가능</div>
         <div class="rule">✓ 신청 마감일 : 매월 25일 (23:59까지)</div>
-        <div class="rule">✓ 날짜별 인원 제한 없이 신청 후, 중복 일정은 직원끼리 조율</div>
+        <div class="rule">✓ 평일 2명·토/일 1명 초과 시 객관적 기준으로 조율</div>
       </div>
 
       <button class="submit" id="submitBtn">신청 완료하기</button>
@@ -389,6 +414,14 @@ body::before{
         </div>
         <div class="calendar" id="calendar"></div>
         <div class="legend" id="legend"></div>
+      </div>
+
+      <div class="card conflict-card">
+        <div class="conflict-head">
+          <h3>중복 신청 일정 조율</h3>
+          <small>평일 3명 이상 · 토/일 2명 이상만 표시</small>
+        </div>
+        <div class="conflict-list" id="conflictList"></div>
       </div>
 
       <div class="card summary-card">
@@ -489,8 +522,10 @@ const weekdayNames = ["일", "월", "화", "수", "목", "금", "토"];
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth() + 1;
 let allSchedules = {};
+let conflictData = {};
 let mySelectedDays = new Set();
 let myMonthlyLeaveDay = null;
+const ADMIN_PIN = "6666";
 
 renderLegend();
 render();
@@ -546,6 +581,7 @@ function render(){
   populateMonthlyLeaveSelect();
   paintSavedSchedules();
   renderMonthlySummary();
+  renderConflictPanel();
   updateRemaining();
 }
 
@@ -621,6 +657,7 @@ function toggleDay(day){
 
   paintSavedSchedules();
   renderMonthlySummary();
+  renderConflictPanel();
   updateRemaining();
 }
 
@@ -718,13 +755,13 @@ function paintSavedSchedules(){
       dayBox.classList.add('selected');
     }
 
-    if(applicants.length >= 2){
+    if(isOverCapacity(day, applicants.length)){
       dayBox.classList.add('overlap');
     }
 
-    slot.textContent = applicants.length >= 2
+    slot.textContent = isOverCapacity(day, applicants.length)
       ? `신청 ${applicants.length}명 · 조율 필요`
-      : `신청 ${applicants.length}명`;
+      : `신청 ${applicants.length}명 / 허용 ${getDayCapacity(day)}명`;
   });
 }
 
@@ -741,6 +778,198 @@ function validateBeforeSubmit(staff){
   }
 
   return true;
+}
+
+function getDayCapacity(day){
+  const date = new Date(currentYear, currentMonth - 1, Number(day));
+  const weekday = date.getDay();
+  return (weekday === 0 || weekday === 6) ? 1 : 2;
+}
+
+function isOverCapacity(day, applicantCount){
+  return Number(applicantCount) > getDayCapacity(day);
+}
+
+function getConflictDays(){
+  const lastDate = new Date(currentYear, currentMonth, 0).getDate();
+  const result = [];
+  for(let day=1; day<=lastDate; day++){
+    const applicants = getApplicantsForDay(day);
+    const capacity = getDayCapacity(day);
+    if(applicants.length > capacity) result.push({ day, applicants, capacity });
+  }
+  return result;
+}
+
+function getConflictMonthData(){
+  return conflictData[monthKey()] || {};
+}
+
+function getResolutionForDay(day, applicants){
+  const saved = getConflictMonthData().resolutions?.[day] || null;
+  if(!saved) return null;
+  const original = (saved.originalApplicants || applicants).slice().sort().join('|');
+  const current = applicants.slice().sort().join('|');
+  return (saved.signature === current || original === current || (saved.approved || []).slice().sort().join('|') === current) ? saved : null;
+}
+
+function getYieldCount(staff){
+  const history = conflictData?.yieldHistory?.[staff] || {};
+  return Object.keys(history).length;
+}
+
+function getPreferenceRank(value){
+  return ({ must:3, prefer:2, flexible:1 })[value] || 0;
+}
+
+function getRecommendedApplicants(applicants, capacity, day){
+  const monthData = getConflictMonthData();
+  return applicants.slice().sort((a,b) => {
+    const prefA = monthData.preferences?.[a]?.[day] || '';
+    const prefB = monthData.preferences?.[b]?.[day] || '';
+    const prefDiff = getPreferenceRank(prefB) - getPreferenceRank(prefA);
+    if(prefDiff) return prefDiff;
+    const yieldDiff = getYieldCount(b) - getYieldCount(a);
+    if(yieldDiff) return yieldDiff;
+    return employees.indexOf(a) - employees.indexOf(b);
+  }).slice(0, capacity);
+}
+
+function preferenceText(value){
+  return ({ must:'꼭 쉬어야 함', prefer:'가능하면 쉬고 싶음', flexible:'다른 날짜로 변경 가능' })[value] || '의사 미선택';
+}
+
+function renderConflictPanel(){
+  const list = document.getElementById('conflictList');
+  if(!list) return;
+  const conflicts = getConflictDays();
+  const selectedStaff = document.getElementById('staffSelect').value;
+  const monthData = getConflictMonthData();
+
+  if(!conflicts.length){
+    list.innerHTML = '<div class="conflict-empty">현재 허용 인원을 초과한 휴무 신청 날짜가 없습니다.</div>';
+    return;
+  }
+
+  list.innerHTML = conflicts.map(({day, applicants, capacity}) => {
+    const date = new Date(currentYear, currentMonth - 1, day);
+    const weekday = weekdayNames[date.getDay()];
+    const resolution = getResolutionForDay(day, applicants);
+    const recommended = getRecommendedApplicants(applicants, capacity, day);
+    const rows = applicants.map(name => {
+      const savedPref = monthData.preferences?.[name]?.[day] || '';
+      const canEdit = name === selectedStaff;
+      const yieldCount = getYieldCount(name);
+      const checked = resolution?.approved?.includes(name) || (!resolution && recommended.includes(name));
+      return `
+        <div class="conflict-person">
+          <span class="preference-label" style="color:${staffTextColors[name] || '#475569'}">
+            ${shortNames[name] || name}<br><small>이전 양보 ${yieldCount}회</small>
+          </span>
+          ${canEdit ? `
+            <select id="pref-${day}-${name}">
+              <option value="" ${!savedPref ? 'selected' : ''}>조율 의사 선택</option>
+              <option value="must" ${savedPref==='must' ? 'selected' : ''}>필수 휴무 · 변경 어려움</option>
+              <option value="prefer" ${savedPref==='prefer' ? 'selected' : ''}>희망 휴무</option>
+              <option value="flexible" ${savedPref==='flexible' ? 'selected' : ''}>다른 날짜로 변경 가능</option>
+            </select>` : `<span class="preference-label">${preferenceText(savedPref)}</span>`}
+        </div>
+        <label class="approval-row">
+          <input type="checkbox" class="approval-check" data-day="${day}" value="${name}" ${checked ? 'checked' : ''}>
+          관리자 확정 대상
+        </label>`;
+    }).join('');
+
+    const approvedText = resolution?.approved?.length
+      ? `확정: ${resolution.approved.map(n => shortNames[n] || n).join(', ')}`
+      : `추천: ${recommended.map(n => shortNames[n] || n).join(', ')}`;
+
+    return `
+      <div class="conflict-item ${resolution ? 'resolved' : ''}">
+        <div class="conflict-date">
+          <span>${currentMonth}월 ${day}일(${weekday}) · 신청 ${applicants.length}명 / 허용 ${capacity}명</span>
+          <span class="conflict-status">${resolution ? '최종 확정' : '조율 필요'}</span>
+        </div>
+        <div class="conflict-guide">우선순위: 필수 휴무 → 이전 양보 횟수 → 관리자 최종 판단<br>${approvedText}</div>
+        ${rows}
+        ${selectedStaff && applicants.includes(selectedStaff) ? `
+          <div class="conflict-actions">
+            <button class="small-action" type="button" onclick="saveConflictPreference(${day}, '${selectedStaff}')">내 조율 의사 저장</button>
+          </div>` : ''}
+        <div class="manager-row">
+          <input type="password" id="managerPin-${day}" placeholder="관리자 PIN 입력" />
+          <button class="small-action manager" type="button" onclick="finalizeConflict(${day})">${resolution ? '확정 다시 저장' : '선택 인원 최종 확정'}</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function saveConflictPreference(day, staff){
+  const pin = document.getElementById('pinInput').value;
+  if(employeePins[staff] !== pin){
+    alert('본인의 PIN 번호를 입력해주세요.');
+    return;
+  }
+  const select = document.getElementById(`pref-${day}-${staff}`);
+  const value = select?.value || '';
+  if(!value){
+    alert('조율 의사를 선택해주세요.');
+    return;
+  }
+  if(!db){ alert('Firebase 연결을 확인해주세요.'); return; }
+  db.ref(`conflictCoordination/${monthKey()}/preferences/${staff}/${day}`).set(value)
+    .then(() => showNotice(`${currentMonth}월 ${day}일 조율 의사가 저장되었습니다.`, 'success'))
+    .catch(error => { console.error(error); alert('조율 의사 저장에 실패했습니다.'); });
+}
+
+function finalizeConflict(day){
+  const pinInput = document.getElementById(`managerPin-${day}`);
+  if(!pinInput || pinInput.value !== ADMIN_PIN){
+    alert('관리자 PIN 번호가 올바르지 않습니다.');
+    return;
+  }
+  if(!db){ alert('Firebase 연결을 확인해주세요.'); return; }
+
+  const applicants = getApplicantsForDay(day);
+  const capacity = getDayCapacity(day);
+  const approved = Array.from(document.querySelectorAll(`.approval-check[data-day="${day}"]:checked`)).map(el => el.value);
+
+  if(approved.length !== capacity){
+    alert(`${currentMonth}월 ${day}일은 ${capacity}명만 확정해야 합니다.\n현재 ${approved.length}명이 선택되어 있습니다.`);
+    return;
+  }
+  if(approved.some(name => !applicants.includes(name))){
+    alert('신청자 목록을 다시 확인해주세요.');
+    return;
+  }
+
+  const displaced = applicants.filter(name => !approved.includes(name));
+  const updates = {};
+
+  displaced.forEach(name => {
+    const currentDays = (allSchedules[monthKey()]?.[name]?.days || []).map(Number);
+    updates[`schedules/${monthKey()}/${name}/days`] = currentDays.filter(d => d !== Number(day));
+    updates[`conflictCoordination/yieldHistory/${name}/${monthKey()}-${String(day).padStart(2,'0')}`] = {
+      month: monthKey(), day:Number(day), yieldedAt:Date.now(), approved
+    };
+  });
+
+  updates[`conflictCoordination/${monthKey()}/resolutions/${day}`] = {
+    signature: approved.slice().sort().join('|'),
+    originalApplicants: applicants,
+    approved,
+    displaced,
+    capacity,
+    resolvedAt: Date.now()
+  };
+
+  db.ref().update(updates).then(() => {
+    showNotice(`${currentMonth}월 ${day}일 휴무자가 최종 확정되었습니다.`, 'success');
+    alert(`최종 확정: ${approved.map(n => shortNames[n] || n).join(', ')}\n날짜 변경 필요: ${displaced.map(n => shortNames[n] || n).join(', ') || '없음'}`);
+  }).catch(error => {
+    console.error(error);
+    alert('최종 확정 저장에 실패했습니다.');
+  });
 }
 
 function updateRemaining(){
@@ -763,6 +992,13 @@ function loadAllSchedules(){
     loadMySchedule(false);
     paintSavedSchedules();
     renderMonthlySummary();
+    renderConflictPanel();
+  });
+
+  db.ref('conflictCoordination').on('value', snapshot => {
+    conflictData = snapshot.val() || {};
+    renderConflictPanel();
+    renderMonthlySummary();
   });
 }
 
@@ -781,6 +1017,7 @@ function loadMySchedule(shouldPaint = true){
   if(shouldPaint){
     paintSavedSchedules();
     renderMonthlySummary();
+    renderConflictPanel();
   }
   updateRemaining();
 }
@@ -813,8 +1050,10 @@ function renderMonthlySummary(){
     const monthlyLeaveUsers = getMonthlyLeaveUsersForDay(day);
 
     const workingText = coloredNames(working);
+    const overCapacity = isOverCapacity(day, off.length);
+    const resolution = overCapacity ? getResolutionForDay(day, off) : null;
     const offSentence = off.length
-      ? `${coloredNames(off)}님이 휴무입니다.${off.length >= 2 ? ' <strong>중복 신청 일정 조율이 필요합니다.</strong>' : ''}`
+      ? `${coloredNames(off)}님이 휴무입니다.${overCapacity ? (resolution ? ' <strong>허용 인원에 맞게 최종 확정되었습니다.</strong>' : ` <strong>허용 인원 ${getDayCapacity(day)}명을 초과하여 일정 조율이 필요합니다.</strong>`) : ''}`
       : `휴무자는 없습니다.`;
     const monthlyLeaveSentence = monthlyLeaveUsers.length
       ? ` (${monthlyLeaveUsers.map(name => `${shortNames[name] || name} 님이 월차 1일을 사용하였습니다.`).join(' ')})`
@@ -836,6 +1075,7 @@ document.getElementById('monthlyLeaveSelect').addEventListener('change', (event)
   myMonthlyLeaveDay = event.target.value ? Number(event.target.value) : null;
   paintSavedSchedules();
   renderMonthlySummary();
+  renderConflictPanel();
 });
 
 document.getElementById('staffSelect').addEventListener('change', () => {
