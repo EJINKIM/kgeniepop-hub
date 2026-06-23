@@ -313,6 +313,12 @@ body::before{
 
 
 .conflict-guide{margin:8px 0 12px;padding:10px 12px;border-radius:14px;background:rgba(255,247,237,.8);color:#9a3412;font-size:12px;line-height:1.55;}
+.preference-help{display:grid;gap:7px;margin:10px 0 14px;padding:12px;border-radius:15px;background:rgba(248,250,252,.88);border:1px solid rgba(203,213,225,.72);font-size:12px;line-height:1.55;color:#475569;}
+.preference-help strong{color:#334155;}
+.manager-note{margin-top:9px;font-size:11px;line-height:1.5;color:#64748b;}
+.manager-row{grid-template-columns:minmax(120px,.8fr) minmax(130px,1fr) auto;}
+.manager-row select,.manager-row input{width:100%;padding:10px 11px;border-radius:12px;border:1px solid rgba(203,213,225,.8);background:rgba(255,255,255,.9);color:#475569;outline:none;}
+@media(max-width:620px){.manager-row{grid-template-columns:1fr;}.manager-row .small-action.manager{width:100%;}}
 .approval-row{display:flex;align-items:center;gap:8px;margin:6px 0 10px 82px;font-size:12px;color:#475569;font-weight:700;}
 .approval-row input{width:16px;height:16px;}
 .preference-label small{font-size:10px;color:#94a3b8;font-weight:700;}
@@ -393,6 +399,7 @@ body::before{
         <div class="rule">✓ 매월 15일부터 다음 달 휴무 신청 가능</div>
         <div class="rule">✓ 신청 마감일 : 매월 25일 (23:59까지)</div>
         <div class="rule">✓ 평일 2명·토/일 1명 초과 시 객관적 기준으로 조율</div>
+        <div class="rule">✓ 최종 확정은 정부영·윤희준 이사님 중 한 분이 관리자 PIN으로 익명 처리</div>
       </div>
 
       <button class="submit" id="submitBtn">신청 완료하기</button>
@@ -525,7 +532,10 @@ let allSchedules = {};
 let conflictData = {};
 let mySelectedDays = new Set();
 let myMonthlyLeaveDay = null;
-const ADMIN_PIN = "6666";
+const managerAccounts = {
+  "정부영": { pin:"7777", anonymousId:"directorA" },
+  "윤희준": { pin:"8888", anonymousId:"directorB" }
+};
 
 renderLegend();
 render();
@@ -869,9 +879,9 @@ function renderConflictPanel(){
           ${canEdit ? `
             <select id="pref-${day}-${name}">
               <option value="" ${!savedPref ? 'selected' : ''}>조율 의사 선택</option>
-              <option value="must" ${savedPref==='must' ? 'selected' : ''}>필수 휴무 · 변경 어려움</option>
-              <option value="prefer" ${savedPref==='prefer' ? 'selected' : ''}>희망 휴무</option>
-              <option value="flexible" ${savedPref==='flexible' ? 'selected' : ''}>다른 날짜로 변경 가능</option>
+              <option value="must" ${savedPref==='must' ? 'selected' : ''}>필수 휴무 · 병원·가족행사·예약·시험 등</option>
+              <option value="prefer" ${savedPref==='prefer' ? 'selected' : ''}>희망 휴무 · 가능하면 해당 날짜 선호</option>
+              <option value="flexible" ${savedPref==='flexible' ? 'selected' : ''}>변경 가능 · 다른 날짜로 이동 가능</option>
             </select>` : `<span class="preference-label">${preferenceText(savedPref)}</span>`}
         </div>
         <label class="approval-row">
@@ -891,15 +901,27 @@ function renderConflictPanel(){
           <span class="conflict-status">${resolution ? '최종 확정' : '조율 필요'}</span>
         </div>
         <div class="conflict-guide">우선순위: 필수 휴무 → 이전 양보 횟수 → 관리자 최종 판단<br>${approvedText}</div>
+        <div class="preference-help">
+          <div><strong>필수 휴무</strong> · 병원, 가족 행사, 예약, 시험 일정 등으로 날짜 변경이 어려운 경우</div>
+          <div><strong>희망 휴무</strong> · 가능하면 해당 날짜에 쉬는 것을 선호하는 경우</div>
+          <div><strong>변경 가능</strong> · 필요하면 다른 날짜로 옮겨도 괜찮은 경우</div>
+          <div>개인적인 상세 사유는 공개되지 않으며, 선택한 조율 단계만 직원들에게 표시됩니다.</div>
+        </div>
         ${rows}
         ${selectedStaff && applicants.includes(selectedStaff) ? `
           <div class="conflict-actions">
             <button class="small-action" type="button" onclick="saveConflictPreference(${day}, '${selectedStaff}')">내 조율 의사 저장</button>
           </div>` : ''}
         <div class="manager-row">
-          <input type="password" id="managerPin-${day}" placeholder="관리자 PIN 입력" />
+          <select id="managerName-${day}" aria-label="관리자 선택">
+            <option value="">관리자 선택</option>
+            <option value="정부영">정부영 이사님</option>
+            <option value="윤희준">윤희준 이사님</option>
+          </select>
+          <input type="password" id="managerPin-${day}" placeholder="관리자 전용 PIN 입력" />
           <button class="small-action manager" type="button" onclick="finalizeConflict(${day})">${resolution ? '확정 다시 저장' : '선택 인원 최종 확정'}</button>
         </div>
+        <div class="manager-note">두 이사님 중 한 분만 본인 계정과 PIN으로 확정할 수 있습니다. 직원 화면과 월간 요약에는 확정한 관리자 이름이 표시되지 않습니다.</div>
       </div>`;
   }).join('');
 }
@@ -923,9 +945,17 @@ function saveConflictPreference(day, staff){
 }
 
 function finalizeConflict(day){
+  const managerNameSelect = document.getElementById(`managerName-${day}`);
   const pinInput = document.getElementById(`managerPin-${day}`);
-  if(!pinInput || pinInput.value !== ADMIN_PIN){
-    alert('관리자 PIN 번호가 올바르지 않습니다.');
+  const managerName = managerNameSelect?.value || '';
+  const managerAccount = managerAccounts[managerName];
+
+  if(!managerName){
+    alert('확정할 관리자 계정을 선택해주세요.');
+    return;
+  }
+  if(!managerAccount || !pinInput || pinInput.value !== managerAccount.pin){
+    alert('선택한 관리자와 PIN 번호가 일치하지 않습니다.');
     return;
   }
   if(!db){ alert('Firebase 연결을 확인해주세요.'); return; }
@@ -960,12 +990,14 @@ function finalizeConflict(day){
     approved,
     displaced,
     capacity,
-    resolvedAt: Date.now()
+    resolvedAt: Date.now(),
+    resolvedBy: managerAccount.anonymousId,
+    resolvedByDisplay: "관리자 익명 확정"
   };
 
   db.ref().update(updates).then(() => {
     showNotice(`${currentMonth}월 ${day}일 휴무자가 최종 확정되었습니다.`, 'success');
-    alert(`최종 확정: ${approved.map(n => shortNames[n] || n).join(', ')}\n날짜 변경 필요: ${displaced.map(n => shortNames[n] || n).join(', ') || '없음'}`);
+    alert(`관리자 익명 확정이 완료되었습니다.\n최종 확정: ${approved.map(n => shortNames[n] || n).join(', ')}\n날짜 변경 필요: ${displaced.map(n => shortNames[n] || n).join(', ') || '없음'}`);
   }).catch(error => {
     console.error(error);
     alert('최종 확정 저장에 실패했습니다.');
