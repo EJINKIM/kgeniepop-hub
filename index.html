@@ -476,8 +476,8 @@ body::before{
   <section class="guide-modal-panel" role="dialog" aria-modal="true" aria-labelledby="coordinationGuideTitle">
     <button class="guide-close-btn" type="button" onclick="closeCoordinationGuide()" aria-label="안내창 닫기">×</button>
     <div class="guide-modal-kicker">K GENIE POP 휴무 조율 가이드</div>
-    <h2 id="coordinationGuideTitle">우리는 평화롭고, 공정하게 Go~ 😊</h2>
-    <p class="guide-intro">처음 입사한 직원도 이 안내만 읽으면 신청부터 최종 확정까지 한 번에 이해할 수 있어요.</p>
+    <h2 id="coordinationGuideTitle"> K지니팝에서 평화롭고, 공정하게 Go~ 😊</h2>
+    <p class="guide-intro"> 소중한 직원님! 이 안내만 읽으면 신청부터 최종 확정까지 한 번에 이해할 수 있어요.</p>
 
     <div class="guide-step">
       <span class="guide-step-number">1</span>
@@ -493,7 +493,7 @@ body::before{
     </div>
     <div class="guide-step">
       <span class="guide-step-number">4</span>
-      <div><strong>확정 대상은 시스템이 자동 추천해요.</strong><p>필수 휴무 → 사용 가능한 양보 우선권 → 동일 조건일 경우 관리자 판단 순으로 계산합니다. 직원이 체크박스를 직접 선택하지 않아요.</p></div>
+      <div><strong>확정 대상은 시스템이 자동 추천해드려요.</strong><p>필수 휴무 → 사용 가능한 양보 적립 우선권 → 동일 조건일 경우, 관리자(이사) 판단 순으로 설정됩니다.</p></div>
     </div>
     <div class="guide-step">
       <span class="guide-step-number">5</span>
@@ -501,11 +501,11 @@ body::before{
     </div>
     <div class="guide-step">
       <span class="guide-step-number">6</span>
-      <div><strong>마지막 확정은 이사님이 익명으로 처리해요.</strong><p>두 분의 이사 중 한 분만 본인 계정과 PIN으로 익명으로 확정할 수 있습니다. 직원들의 화면과 월간 요약에는 확정한 관리자(이사) 이름이 표시되지 않습니다.</p></div>
+      <div><strong>마지막 확정은 이사의 권한으로 익명으로 확정 처리돼요.</strong><p>두 분의 이사 중 한 분은 본인 계정과 PIN으로 휴무자를 익명으로 최종 확정할 수 있습니다. 직원들의 화면과 월간 요약에는 확정한 관리자(이사님) 이름이 표시되지 않습니다.</p></div>
     </div>
 
-    <div class="guide-fairness-note">🌿 양보한 사람이 계속 손해 보지 않고, 새로 입사한 직원도 같은 기준을 적용받도록 기록과 우선권을 자동 관리합니다.</div>
-    <button class="guide-confirm-btn" type="button" onclick="closeCoordinationGuide()">이해했어요! 평화롭게 Go~ 😊</button>
+    <div class="guide-fairness-note">🌿 양보한 사람이 계속 손해 보지 않고, 배려받은 직원도 양보할 수 있는 기준을 적용받도록 기록과 우선권을 시스템이 자동 관리합니다.</div>
+    <button class="guide-confirm-btn" type="button" onclick="closeCoordinationGuide()">이해했어요! 평화롭게 GO~ 😊</button>
   </section>
 </div>
 
@@ -976,7 +976,7 @@ function renderConflictPanel(){
           <span>${currentMonth}월 ${day}일(${weekday}) <span class="soft-divider">·</span> <span class="application-count">신청 ${applicants.length}명</span> <span class="soft-divider">/</span> <span class="capacity-text">허용 ${capacity}명</span></span>
           <span class="conflict-status">${resolution ? '최종 확정' : '조율 필요'}</span>
         </div>
-        <div class="conflict-guide"><span class="cheer-note">우리는 평화롭고, 공정하게 Go~ 😊</span><br>우선순위: 필수 휴무 → 사용 가능한 양보 우선권 → 관리자 최종 판단<br><small>확정 대상 체크는 시스템이 자동으로 표시하며 직원이 직접 변경할 수 없습니다.</small><br>${approvedText}<br><small>이번에 날짜를 양보하면 우선권 1회가 적립되고, 다음 초과 조율에서 우선 배정될 때 1회 차감됩니다.</small></div>
+        <div class="conflict-guide"><span class="cheer-note">k GENIE POP! 평화롭고, 공정하게 Gㅐ~ 😊</span><br>우선순위: 필수 휴무 → 사용 가능한 양보 적립 우선권 → 관리자 최종 판단<br><small>확정 대상 체크는 시스템이 자동으로 표시하며 직원이 직접 변경할 수 없습니다.</small><br>${approvedText}<br><small>이번에 날짜를 양보하면 우선권 1회가 적립되고, 다음 초과 조율에서 우선 배정될 때 1회 차감됩니다.</small></div>
         <div class="preference-help">
           <div><strong>필수 휴무</strong> · 병원, 가족 행사, 예약, 시험 일정 등으로 날짜 변경이 어려운 경우</div>
           <div><strong>희망 휴무</strong> · 가능하면 해당 날짜에 쉬는 것을 선호하는 경우</div>
