@@ -605,28 +605,35 @@ body::before{
   .weekdays{font-size:10px;margin-bottom:6px;}
   .calendar{gap:3px;}
   .day{
-    min-height:57px;
+    min-height:66px;
     padding:6px 4px;
     border-radius:10px;
     box-shadow:0 4px 10px rgba(148,163,184,.10);
   }
-  .empty-day{min-height:57px;}
+  .empty-day{min-height:66px;}
   .day:hover{transform:none;}
   .day-number{font-size:12px;}
   .staff-list{
-    gap:3px;
-    margin-top:7px;
+    gap:2px;
+    margin-top:5px;
     align-items:center;
   }
   .staff-tag{
-    width:8px;
-    height:8px;
-    min-width:8px;
-    padding:0;
-    border-radius:50%;
-    font-size:0;
+    width:auto;
+    height:auto;
+    min-width:0;
+    max-width:100%;
+    padding:2px 3px;
+    border-radius:999px;
+    font-size:7px;
+    line-height:1.05;
+    font-weight:900;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    background:rgba(255,255,255,.82);
     box-shadow:none;
-    background:currentColor;
+    letter-spacing:-.04em;
   }
   .monthly-leave-tag{
     width:15px;
@@ -797,7 +804,7 @@ body::before{
   <div class="hero">
     <div class="card sidebar">
       <h2>K지니POP 직원 휴무 세팅ZONE</h2>
-      <p class="helper">직원 선택 후 PIN을 입력하고 기본 휴무 8일을 선택하세요. 월차는 매달 1일씩 발생하며, 사용하지 않은 월차는 다음 달로 이월됩니다.</p>
+      <p class="helper">직원 선택 후 PIN을 입력하고 기본 휴무 8일을 선택하세요. 월차는 한 달을 만근하면 다음 달에 1일이 발생하며, 사용하지 않은 월차는 다음 달로 이월됩니다.</p>
 
       <div class="staff-select">
         <select id="staffSelect">
@@ -831,7 +838,7 @@ body::before{
           <span>현재 사용 가능한 월차</span>
           <strong id="monthlyLeaveBalance">0일</strong>
         </div>
-        <p class="monthly-leave-help" id="monthlyLeaveHelp">월차는 매달 1일씩 발생하며, 미사용분은 다음 달로 이월됩니다. 한 달에는 최대 3일까지 사용할 수 있어요.</p>
+        <p class="monthly-leave-help" id="monthlyLeaveHelp">월차는 한 달을 만근하면 다음 달에 1일이 발생하며, 미사용분은 계속 이월됩니다. 한 달에는 최대 3일까지 사용할 수 있어요.</p>
         <div class="monthly-leave-days" id="monthlyLeaveDays"></div>
         <div class="monthly-leave-selected" id="monthlyLeaveSelected">선택한 월차 0일</div>
       </div>
@@ -846,7 +853,7 @@ body::before{
         <summary class="mobile-section-summary">📌 신청 규칙 한눈에 보기</summary>
         <div class="rules">
           <div class="rule" id="leaveRule">✓ 직원별 월 8회 휴무 신청</div>
-          <div class="rule">✓ 월차는 매달 1일 발생 · 미사용분 이월 · 월 최대 3일 사용</div>
+          <div class="rule">✓ 월차는 전월 만근 시 다음 달 1일 발생 · 미사용분 이월 · 월 최대 3일 사용</div>
           <div class="rule">✓ 매월 15일부터 다음 달 휴무 신청 가능</div>
           <div class="rule">✓ 신청 마감일 : 매월 25일 (23:59까지)</div>
           <div class="rule">✓ 평일 2명·토/일 1명 초과 시 객관적 기준으로 조율</div>
@@ -913,7 +920,7 @@ body::before{
     </div>
     <div class="guide-step">
       <span class="guide-step-number">2</span>
-      <div><strong>월차는 모아 두었다가 필요한 달에 사용할 수 있어요.</strong><p>2026년 7월부터 매달 월차 1일이 발생하며, 사용하지 않은 월차는 다음 달로 이월됩니다. 예를 들어 두 달 동안 월차를 사용하지 않았다면 세 번째 달에는 총 3일을 사용할 수 있어요. 단, 매장 운영을 위해 한 달에 사용할 수 있는 월차는 최대 3일까지입니다.</p></div>
+      <div><strong>월차는 모아 두었다가 필요한 달에 사용할 수 있어요.</strong><p>직원 모두 2026년 6월부터 근무를 시작했으므로, 6월을 만근하면 7월에 월차 1일을 사용할 수 있습니다. 이후에도 한 달을 만근할 때마다 다음 달에 월차 1일이 새로 발생하며, 사용하지 않은 월차는 다음 달로 이월됩니다. 예를 들어 7월과 8월에 월차를 사용하지 않았다면 9월에는 총 2일을 사용할 수 있어요. 단, 매장 운영을 위해 한 달에 사용할 수 있는 월차는 최대 3일까지입니다.</p></div>
     </div>
     <div class="guide-step">
       <span class="guide-step-number">3</span>
@@ -1072,7 +1079,7 @@ function renderLegend(){
   const legend = document.getElementById('legend');
   legend.innerHTML = employees.map(name => `
     <div class="badge"><span class="dot" style="background:${staffColors[name]}"></span>${shortNames[name]}</div>
-  `).join('') + `<div class="badge">진한 테두리 = 내가 선택한 휴무</div><div class="badge">보라색 표시 = 월차</div><div class="badge">점선 테두리 = 중복 신청 · 일정 조율 필요</div>`;
+  `).join('') + `<div class="badge">작은 이름표 = 휴무 신청자</div><div class="badge">진한 테두리 = 내가 선택한 휴무</div><div class="badge">보라색 표시 = 월차</div><div class="badge">점선 테두리 = 중복 신청 · 일정 조율 필요</div>`;
 }
 
 function showNotice(message, type='success'){
@@ -1215,9 +1222,10 @@ function monthSerial(year, month){
 }
 
 function getAccruedMonthlyLeave(year = currentYear, month = currentMonth){
-  const start = monthSerial(2026, 7);
+  // 2026년 6월 만근분부터 계산하며, 최초 월차는 2026년 7월에 1일 사용 가능합니다.
+  const firstUsableMonth = monthSerial(2026, 7);
   const target = monthSerial(year, month);
-  return target < start ? 0 : target - start + 1;
+  return target < firstUsableMonth ? 0 : target - firstUsableMonth + 1;
 }
 
 function getUsedMonthlyLeaveBefore(staff, year = currentYear, month = currentMonth){
@@ -1227,6 +1235,7 @@ function getUsedMonthlyLeaveBefore(staff, year = currentYear, month = currentMon
     const match = /^(\d{4})-(\d{2})$/.exec(key);
     if(!match) return;
     const serial = monthSerial(Number(match[1]), Number(match[2]));
+    // 실제 사용 기록은 최초 사용 가능 월인 2026년 7월부터 집계합니다.
     if(serial >= monthSerial(2026, 7) && serial < target){
       used += getMonthlyLeaveDaysFromData(allSchedules[key]?.[staff] || {}).length;
     }
@@ -1258,7 +1267,7 @@ function populateMonthlyLeaveSelect(){
   const limit = getMonthlyLeaveSelectableLimit(staff);
   balanceEl.textContent = staff ? `${balance}일` : '직원 선택';
   helpEl.textContent = staff
-    ? `이번 달에는 보유 월차 ${balance}일 중 최대 ${limit}일까지 사용할 수 있어요. 미사용 월차는 다음 달로 이월됩니다.`
+    ? `전월까지 만근하여 발생한 월차는 ${balance}일입니다. 이번 달에는 최대 ${limit}일까지 사용할 수 있고, 미사용분은 다음 달로 이월됩니다.`
     : '직원을 선택하면 현재 보유 월차와 선택 가능한 날짜가 표시됩니다.';
 
   const lastDate = new Date(currentYear, currentMonth, 0).getDate();
@@ -1517,7 +1526,7 @@ function renderGemVault(){
   document.getElementById('gemMessage').textContent = royal
     ? '우리 매장의 보석 같은 직원, 평화의 왕좌에 입성했습니다! ✨'
     : balance === 0
-      ? '배려가 필요한 순간 자발적으로 날짜를 옮기면 보석이 반짝이며 적립돼요.'
+      ? '양보가 필요한 순간 자발적으로 날짜를 옮기면 보석이 반짝이며 적립돼요.'
       : '매장을 반짝이게 만든 소중한 직원의 배려가 차곡차곡 쌓였어요 ✨';
   document.getElementById('gemMeta').textContent = `현재 사용 가능 ${balance}개 · 누적 배려 ${total}회 · 우선 배정 시 1개 사용`;
 }
@@ -1612,14 +1621,14 @@ function renderConflictPanel(){
         ${selectedStaff && applicants.includes(selectedStaff) ? `
           <div class="conflict-actions">
             <button class="small-action" type="button" onclick="saveConflictPreference(${day}, '${selectedStaff}')">내 조율 의사 저장</button>
-            <button class="small-action" type="button" onclick="voluntaryYield(${day}, '${selectedStaff}')">💎 이 날짜 배려하고 다른 날 선택하기</button>
+            <button class="small-action" type="button" onclick="voluntaryYield(${day}, '${selectedStaff}')">💎 이 날짜 양보하고 다른 날 선택하기</button>
           </div>` : ''}
         <details class="compact-details">
           <summary>직원끼리 조율되지 않을 때만 이사 확정</summary>
           <div class="manager-content">
             <div class="manager-row">
               <select id="managerName-${day}" aria-label="관리자(이사) 본인 접속">
-                <option value="">이사 선택</option>
+                <option value="">관리자(이사) 권한 접속하기</option>
                 <option value="정부영">정부영 이사</option>
                 <option value="윤희준">윤희준 이사</option>
               </select>
